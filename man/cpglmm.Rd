@@ -58,8 +58,9 @@ In addition, similar to the package \code{amer} (already retired from CRAN), we 
 
 
 \references{
-\cite{ Zhang Y (2013). Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models, \emph{Statistics and Computing}, 23, 743-757.
-}
+\cite{ Zhang Y (2013). Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models, \emph{Statistics and Computing}, 23, 743-757. 
+} 
+\url{https://github.com/actuaryzhang/cplm/files/144051/TweediePaper.pdf}
 
 \cite{Bates D, Maechler M, Bolker B and Walker S (2015). \code{lme4}: Linear mixed-effects models using Eigen and S4..
 }
