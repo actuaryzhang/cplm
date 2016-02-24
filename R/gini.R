@@ -27,14 +27,15 @@ gini <- function(loss, score, base = NULL, data, ...){
     warning("Only the first base premium is used!")    
   }    
   # check score 
-  if (length(base) && (pos <- match(base, score, nomatch = 0))){
+  if (length(base) && (pos <- match(base, score, nomatch = 0))
+      && length(score) > 1) {
     score <- score[-pos]
     warning(paste(base, "is removed from score!"))
   }
   
   # get loss and standardize so that mean is 1
   y <- data[, loss] / mean(data[, loss])
-  sc <- data[, score]
+  sc <- data[, score, drop = FALSE]
   
   # when the base premium is specified
   if (!is.null(base)) {
