@@ -1,0 +1,6 @@
+bibentry(bibtype = "Misc",
+	 title = "Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models",
+	 year = "2013",
+	 author = "Yanwei Zhang",
+	 note = "\\emph{Statistics and Computing}, \\bold{23}, 743-757")
+

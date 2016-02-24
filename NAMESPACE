@@ -1,0 +1,55 @@
+useDynLib(cplm, .registration = TRUE)
+
+############################
+#  import 
+############################
+import(Matrix)
+import(coda)
+import(ggplot2)
+import(biglm)
+importFrom(minqa, bobyqa)
+importFrom(reshape2, melt)
+importFrom(statmod, tweedie)
+importFrom(tweedie, dtweedie.series, dtweedie, tweedie.dev)
+importMethodsFrom(methods, show)
+importFrom(nlme, fixef, ranef, VarCorr)
+importFrom("stats4", AIC, BIC, logLik, vcov)# so S4 methods are used!
+importFrom("stats",
+           anova,
+           coef,
+           confint,
+           deviance,
+           fitted,
+           formula,
+           model.frame,
+           model.matrix,
+           predict,
+           residuals, resid,  
+           terms
+           )
+# R3.3
+importFrom("graphics", "legend", "matlines", "par", "title")
+importFrom("grDevices", "gray")
+importFrom("methods", "as", "is", "new", "slot", "slotNames", "validObject")
+importFrom("splines", "spline.des")
+importFrom("stats", ".getXlevels", "C", "approx", "as.formula", "contr.treatment", "cov", "delete.response", "dist", "glm.fit", "is.empty.model", "model.offset", "model.response", "model.weights", "na.pass", "napredict", "naprint", "naresid", "nlminb", "optim", "pchisq", "pnorm", "printCoefmat", "pt", "qnorm", "quantile", "rnorm", "runif", "setNames", "summary.glm", "symnum", "terms.formula", "var", "binomial", "quasibinomial")
+importFrom("utils", "object.size")
+
+############################
+#  export 
+############################
+# functions 
+export(cpglm, cpglmm, bcplm, zcpglm, gini)
+export(sp2d)
+export(getF, plotF, tp, bsp)   #amer functions
+
+#Classes
+exportClasses(cplm, cpglm, cpglmm, bcplm, summary.cpglmm, zcpglm, gini)
+exportClasses(NullNum, NullList, NullFunc, ListFrame)
+           
+#Methods
+exportMethods(summary, show,  "$", "[[", "[", names, coef, vcov, 
+              residuals, resid, fitted, fixef, ranef, logLik, anova, 
+		  AIC, deviance, terms, formula, model.matrix, plot,
+		  VarCorr, predict)
+S3method(model.frame, cplm)
