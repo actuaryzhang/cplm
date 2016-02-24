@@ -71,9 +71,9 @@ theme.novpadding <-
 @
 
 \SweaveOpts{concordance=TRUE}
-\textcolor{Red}{If you use this software, please cite:}\\
-Zhang, Y (2013). Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models, {\em Statistics and Computing}, 23, 743-757. \\
-\url{https://cplm.googlecode.com/files/MixedTweedie.pdf}
+\textcolor{Red}{{\Large If you use this software, please cite:}\\[2ex]
+Zhang, Y (2013). Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models, {\em Statistics and Computing}, 23, 743-757.} \\[1ex]
+\url{https://github.com/actuaryzhang/cplm/files/144051/TweediePaper.pdf}
 
 
 \section{Introduction}
