@@ -10,7 +10,7 @@ bcplm <- function(formula, link = "log", data, inits = NULL,
                    n.sims = 1000, n.report = 2, prior.beta.mean = NULL, 
                    prior.beta.var = NULL, bound.phi = 100, bound.p = c(1.01, 1.99), 
                    tune.iter = 5000, n.tune = floor(tune.iter/100),
-                   basisGenerators = c("tp", "bsp", "sp2d"), ...) {
+                   basisGenerators = c("tp", "bsp", "sp2d"), doFit = TRUE, ...) {
 
   call <- expand.call(match.call())  
   if (missing(data)) 
@@ -116,6 +116,9 @@ bcplm <- function(formula, link = "log", data, inits = NULL,
              nlev = if (!is.cpglmm) as.integer(0) else 
                     as.integer(sapply(FL$fl, function(x) length(levels(x)))),
              accept = double(n.beta + 2 + dims["n.u"]))
+  
+  # return the bcplm struct used by C code
+  if (!doFit) return(input)
   
   # run MCMC
   sims.list <- .Call("bcplm_mcmc", input)  

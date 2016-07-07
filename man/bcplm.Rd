@@ -17,7 +17,7 @@ bcplm(formula, link = "log", data, inits = NULL,
   n.sims = 1000, n.report = 2, prior.beta.mean = NULL, 
   prior.beta.var = NULL, bound.phi = 100, bound.p = c(1.01, 1.99), 
   tune.iter = 5000, n.tune = floor(tune.iter/100),  
-  basisGenerators = c("tp", "bsp", "sp2d"),  ...)  
+  basisGenerators = c("tp", "bsp", "sp2d"), doFit = TRUE, ...)  
     
 }
 
@@ -69,6 +69,9 @@ a vector of prior variances for the fixed effects. Default is a vector of \code{
 a character vector of names of functions that generate spline bases. See \code{\link{tp}} for details. 
 }
 
+  \item{doFit}{
+if \code{FALSE}, the constructed \code{"bcplm_input"} object is returned before the model is fitted. 
+}
 
   \item{\dots}{ not used.
 }
