@@ -81,14 +81,18 @@ cpglmm <- function(formula, link = "log", data, weights, offset,
              Cx = rep(1.0, length((dm$A)@x)),  
              # was Cx = dm$A)@x which broke in R3.0.x. 
              # Referecen to the same value. Need duplicate in C level
-             deviance = dm$dev, fixef = inits$beta, ranef = numeric(q), 
+             deviance = dm$dev, 
+             fixef = as.numeric(inits$beta * 1), 
+             ranef = numeric(q), 
              u = numeric(q), eta = numeric(n), 
              mu = numeric(n), resid = numeric(n), 
              muEta = numeric(n), var = numeric(n),
              sqrtXWt = as.matrix(numeric(n)), sqrtrWt = numeric(n), 
              RZX = matrix(0, q, d), RX = matrix(0, d, d), 
              ghx = AGQlist[[1]], ghw = AGQlist[[2]], 
-             p = inits$p, phi = inits$phi, link.power = as.double(link.power), 
+             p = as.double(inits$p * 1),      # force copying object
+             phi = as.double(inits$phi * 1), 
+             link.power = as.double(link.power * 1), 
              bound.p = ctr$bound.p, formula = formula, contrasts = contrasts,
              model.frame = fr$mf, inits = inits, vcov = matrix(0, d, d), smooths = list())
   # return cpglmm object if model fitting is turned off
