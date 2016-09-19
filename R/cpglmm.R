@@ -72,6 +72,8 @@ cpglmm <- function(formula, link = "log", data, weights, offset,
   
   # input cpglmm class for optimization 
   # muEta and var are not initialized so that lmer is fitted when PQL.init is TRUE
+  beta <- as.numeric(inits$beta * 1)
+  names(beta) <- names(inits$beta)
   ans <- new(Class = "cpglmm", env = new.env( ), nlmodel = (~I(x))[[2]], 
              frame = fr$mf, call = call, flist = dm$flist, 
              Zt = dm$Zt, X = fr$X, y = as.numeric(fr$Y), 
@@ -82,7 +84,7 @@ cpglmm <- function(formula, link = "log", data, weights, offset,
              # was Cx = dm$A)@x which broke in R3.0.x. 
              # Referecen to the same value. Need duplicate in C level
              deviance = dm$dev, 
-             fixef = as.numeric(inits$beta * 1), 
+             fixef = beta, 
              ranef = numeric(q), 
              u = numeric(q), eta = numeric(n), 
              mu = numeric(n), resid = numeric(n), 
