@@ -620,7 +620,7 @@ getZt <- function(formula, oldmf, newmf){
                 format(x[[3]]))
         mm <- model.matrix(eval(substitute(~expr, list(expr = x[[2]]))), newmf)
         mm <- mm[!is.na(ff), , drop = F]
-        Zt <- do.call(rBind, lapply(seq_len(ncol(mm)), 
+        Zt <- do.call(rbind, lapply(seq_len(ncol(mm)), 
             function(j) {
                 im2@x <- mm[, j]
                 im2
@@ -631,7 +631,7 @@ getZt <- function(formula, oldmf, newmf){
   nlev <- sapply(fl, function(el) length(levels(el$f)))
   if (any(diff(nlev)) > 0) 
         fl <- fl[rev(order(nlev))]        
-  Zt <- do.call(rBind, lapply(fl, "[[", "Zt"))
+  Zt <- do.call(rbind, lapply(fl, "[[", "Zt"))
   Zt
 }         
 

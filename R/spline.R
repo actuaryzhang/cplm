@@ -158,7 +158,7 @@ getF <- function (object, which, n=100, newdata=NULL, interval = c("NONE", "MCMC
         #Cov(hat.beta, hat.b-b) for bias-adjusted empirical Bayes CIs (s. Ruppert/Wand(2003), Semiparametric Regression, p. 138 f.):
         #use V = cov(hat.fixef, hat.ranef) = sigma.eps^2 (C'C + sigma.eps^2/sigma.b^2 D)^-1; C=[XZ]*sqrt(W), D = blockdiag(0, I_dim(b))
         
-        C <- cBind(m@X[,indUnpen, drop=F], t(as.matrix(m@Zt[indPen,])))
+        C <- cbind(m@X[,indUnpen, drop=F], t(as.matrix(m@Zt[indPen,])))
         if(length(m@var)) C <- C * sqrt(1/m@var)
         
         V <- crossprod(C)
@@ -178,7 +178,7 @@ getF <- function (object, which, n=100, newdata=NULL, interval = c("NONE", "MCMC
     } else attr(terms[[i]],"indUnpen")[[j]]	
     cV <- as(chol(fctV(object, attr(terms[[i]],"indGrp")[[j]], 
                        attr(terms[[i]],"indPen")[[j]], indUnpen)), "sparseMatrix")
-    C <- as(cBind(base$X[[j]], base$Z[[j]]), "sparseMatrix")
+    C <- as(cbind(base$X[[j]], base$Z[[j]]), "sparseMatrix")
     sd <- apply(C, 1, function(x, cV){
       ctc <- cV %*% as(x, "sparseMatrix")
       return(sqrt(sum(ctc * ctc)))
@@ -288,7 +288,7 @@ getF <- function (object, which, n=100, newdata=NULL, interval = c("NONE", "MCMC
         lvlInd <- rep(0, nlvl)
         lvlInd[j] <- 1
         
-        X <- cBind("(Intercept)"=1, base0$X[[1]])
+        X <- cbind("(Intercept)"=1, base0$X[[1]])
         if(!grid){
           use <- eval(terms[[i]]$by, data)==lvls[j]
           X[!use,] <- 0
@@ -299,7 +299,7 @@ getF <- function (object, which, n=100, newdata=NULL, interval = c("NONE", "MCMC
           X <- X[,uNames]
         }
         
-        base$Z[[1]] <-  as(cBind(base$Z[[1]], kronecker(X, t(lvlInd), FUN = "*")),"sparseMatrix")
+        base$Z[[1]] <-  as(cbind(base$Z[[1]], kronecker(X, t(lvlInd), FUN = "*")),"sparseMatrix")
         base$X[[1]] <- matrix(0, nrow=n, ncol=0)
       } else {
         ansInd <- j
@@ -316,9 +316,9 @@ getF <- function (object, which, n=100, newdata=NULL, interval = c("NONE", "MCMC
         byColumn <-if(hasBy && paste(safeDeparse(terms[[i]]$by),lvls[j],sep="") %in% names(object@fixef)){
           rep(1, nrow(base$X[[ansInd]]))
         } else numeric(0) 
-        base$X[[ansInd]] <- cBind(byColumn, base$X[[ansInd]])	
+        base$X[[ansInd]] <- cbind(byColumn, base$X[[ansInd]])	
         if("(Intercept)" %in% names(object@fixef)[attr(terms[[i]],"indConst")[[ansInd]]])
-          base$X[[ansInd]] <- cBind(1,base$X[[ansInd]])
+          base$X[[ansInd]] <- cbind(1,base$X[[ansInd]])
         
         indUnpen <- c(attr(terms[[i]],"indConst")[[ansInd]], attr(terms[[i]],"indUnpen")[[ansInd]])
       } else indUnpen <- attr(terms[[i]],"indUnpen")[[ansInd]]	

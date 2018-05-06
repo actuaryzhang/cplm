@@ -301,45 +301,48 @@ lmerFactorList <- function(formula, fr, rmInt, drop)
     bars <- expandSlash(findbars(formula[[3]]))
     if (!length(bars)) stop("No random effects terms specified in formula")
     names(bars) <- unlist(lapply(bars, function(x) deparse(x[[3]])))
-    fl <- lapply(bars,
-                 function(x)
-             {
-                 ff <- eval(substitute(as.factor(fac)[,drop = TRUE],
-                                       list(fac = x[[3]])), mf)
-                 im <- as(ff, "sparseMatrix") # transpose of indicators
-		 ## Could well be that we should rather check earlier .. :
-		 if(!isTRUE(validObject(im, test=TRUE)))
+    
+    fl <- vector("list", length(bars))
+    for (i in 1:length(bars)) {
+      x <- bars[[i]]
+      ff <- eval(substitute(as.factor(fac)[,drop = TRUE],
+                           list(fac = x[[3]])), mf)
+      im <- as(ff, "sparseMatrix") # transpose of indicators
+      ## Could well be that we should rather check earlier .. :
+      if(!isTRUE(validObject(im, test=TRUE)))
 		     stop("invalid conditioning factor in random effect: ", format(x[[3]]))
 
-                 mm <- model.matrix(eval(substitute(~ expr, # model matrix
-                                                    list(expr = x[[2]]))),
-                                    mf)
-                 if (rmInt) {
-                     if (is.na(icol <- match("(Intercept)", colnames(mm)))) break
-                     if (ncol(mm) < 2)
-                         stop("lhs of a random-effects term cannot be an intercept only")
-                     mm <- mm[ , -icol , drop = FALSE]
-                 }
-                 ans <- list(f = ff,
-                             A = do.call(rBind,
-                             lapply(seq_len(ncol(mm)), function(j) im)),
-                             Zt = do.call(rBind,
-                             lapply(seq_len(ncol(mm)),
-                                    function(j) {im@x <- mm[,j]; im})),
-                             ST = matrix(0, ncol(mm), ncol(mm),
-                             dimnames = list(colnames(mm), colnames(mm))))
-                 if (drop) {
-                     ## This is only used for nlmer models.
-                     ## Need to do something more complicated for A
-                     ## here.  Essentially you need to create a copy
-                     ## of im for each column of mm, im@x <- mm[,j],
-                     ## create the appropriate number of copies,
-                     ## prepend matrices of zeros, then rBind and drop0.
-                     ans$A@x <- rep(0, length(ans$A@x))
-                     ans$Zt <- drop0(ans$Zt)
-                 }
-                 ans
-             })
+      mm <- model.matrix(eval(substitute(~ expr, # model matrix
+                                        list(expr = x[[2]]))),
+                        mf)
+      if (rmInt) {
+         if (is.na(icol <- match("(Intercept)", colnames(mm)))) break
+         if (ncol(mm) < 2)
+             stop("lhs of a random-effects term cannot be an intercept only")
+         mm <- mm[ , -icol , drop = FALSE]
+      }
+      ans <- list(f = ff,
+                 A = do.call(rbind,
+                 lapply(seq_len(ncol(mm)), function(j) im)),
+                 Zt = do.call(rbind,
+                 lapply(seq_len(ncol(mm)),
+                        function(j) {im@x <- mm[,j]; im})),
+                 ST = matrix(0, ncol(mm), ncol(mm),
+                 dimnames = list(colnames(mm), colnames(mm))))
+      if (drop) {
+         ## This is only used for nlmer models.
+         ## Need to do something more complicated for A
+         ## here.  Essentially you need to create a copy
+         ## of im for each column of mm, im@x <- mm[,j],
+         ## create the appropriate number of copies,
+         ## prepend matrices of zeros, then rbind and drop0.
+         ans$A@x <- rep(0, length(ans$A@x))
+         ans$Zt <- drop0(ans$Zt)
+      }
+     fl[[i]] <- ans
+    }
+    fl <- fl[!sapply(fl, is.null)]
+    names(fl) <- names(bars)
     dd <-
         VecFromNames(dimsNames, "integer",
                      c(list(n = nrow(mf), p = ncol(fr$X), nt = length(fl),
@@ -418,11 +421,11 @@ mkZt <- function(FL, start, s = 1L)
     trms <- FL$trms
     ST <- lapply(trms, `[[`, "ST")
     Ztl <- lapply(trms, `[[`, "Zt")
-    Zt <- do.call(rBind, Ztl)
+    Zt <- do.call(rbind, Ztl)
     Zt@Dimnames <- vector("list", 2)
     Gp <- c(0L, cumsum(vapply(Ztl, nrow, 1L, USE.NAMES=FALSE)))
     .Call("mer_ST_initialize", ST, Gp, Zt)
-    A <- do.call(rBind, lapply(trms, `[[`, "A"))
+    A <- do.call(rbind, lapply(trms, `[[`, "A"))
     rm(Ztl, FL)                         # because they could be large
     nc <- sapply(ST, ncol)         # of columns in els of ST
     Cm <- createCm(A, s)
@@ -738,7 +741,7 @@ formatVC <- function(varc, digits = max(3, getOption("digits") - 2))
     if (any(reLens > 1)) {
 	maxlen <- max(reLens)
 	corr <-
-	    do.call("rBind",
+	    do.call("rbind",
 		    lapply(recorr,
 			   function(x, maxlen) {
 			       x <- as(x, "matrix")
@@ -749,7 +752,7 @@ formatVC <- function(varc, digits = max(3, getOption("digits") - 2))
 			       cbind(cc, matrix("", nr, maxlen-nr))
 			   }, maxlen))
 	colnames(corr) <- c("Corr", rep.int("", maxlen - 1))
-	cbind(reMat, rBind(corr, rep.int("", ncol(corr))))
+	cbind(reMat, rbind(corr, rep.int("", ncol(corr))))
     } else reMat
 }
 

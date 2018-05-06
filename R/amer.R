@@ -138,7 +138,7 @@ expandBasis <-
         ##     if(bySetToZero){
         ##         keep <- (by == levels(by[, drop=TRUE])[i])
         ##     } else keep <- 1
-        ##     basis$Z[[1]] <- cBind(basis$Z[[1]], Z.o * keep)
+        ##     basis$Z[[1]] <- cbind(basis$Z[[1]], Z.o * keep)
         ##     #basis$Z[[1]] <- Matrix(model.matrix(~ 0 + Z.o:by[, drop=TRUE]))
         ## }	
         basis$X[[1]] <- X.o
@@ -220,7 +220,7 @@ expandMf <-
   {
     for(i in 1:length(fct)){
       #matrix with all unpenalized terms for fct
-      newX <- do.call(cBind, fct[[i]]$X)
+      newX <- do.call(cbind, fct[[i]]$X)
       
       #factor variables with no. of levels = no. of penalized basis fcts  
       #newFact <-   replicate(length(fct[[i]]$Z), rep(1:ncol(fct[[i]]$Z[[1]]), length=nrow(fct[[i]]$Z[[1]])))
@@ -241,11 +241,11 @@ expandMf <-
         # duplicate grouping factor for allPen-function groups so that assignment (which entries in ranef belong to which penalization 
         # group) can be reconstructed from the fitted model object m if there is another random effect associated with the by-variable.
         # will need this for predict etc.. since attr(m@flist,"assign") only works the other way around....
-        newFact <- cBind(newFact, eval(attr(fct[[i]],"call")$by, fr))
+        newFact <- cbind(newFact, eval(attr(fct[[i]],"call")$by, fr))
         colnames(newFact)[ncol(newFact)] <- names(fct[[i]]$X)
       } 
       
-      fr <- cBind(cBind(fr, newX),newFact)
+      fr <- cbind(cbind(fr, newX),newFact)
     }
     return(fr)
   }
