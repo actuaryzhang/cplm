@@ -147,5 +147,6 @@ setMethod("plot",
       pp <- pp + facet_grid(Base~.) else 
       pp <- pp + facet_grid(Base~Score) 
     print(pp)
+    return(pp)
   }
 )
