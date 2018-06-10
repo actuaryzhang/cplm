@@ -28,12 +28,10 @@ check.args.bcplm <- function(call, n.beta, n.chains){
   if (!is.null(n.burnin) && !is.null(n.iter) && 
     n.burnin >= n.iter)
   	stop("'n.burnin' should be less than 'n.iter'" )
-  if (!is.null(call$prior.beta.mean) && 
-  	length(call$prior.beta.mean) != n.beta)
-  	stop(gettextf("'prior.beta.mean' should be of length %d"), n.beta)  
-  if (!is.null(call$prior.beta.mean) && 
-  	length(call$prior.beta.mean) != n.beta)
-  	stop(gettextf("'prior.beta.mean' should be of length %d"), n.beta)
+  if (!is.null(call$prior.beta.mean) && length(eval(call$prior.beta.mean)) != n.beta)
+    stop(gettextf("'prior.beta.mean' should be of length %d", n.beta))
+  if (!is.null(call$prior.beta.var) && length(eval(call$prior.beta.var)) != n.beta)
+    stop(gettextf("'prior.beta.var' should be of length %d", n.beta))
 }
 
 ###########################################################
