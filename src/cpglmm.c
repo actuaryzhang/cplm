@@ -832,7 +832,9 @@ static void internal_ghq(int N, double *x, double *w)
  */
 static void update_ranef(SEXP x)
 {
-    int *Gp = Gp_SLOT(x), *dims = DIMS_SLOT(x), *perm = PERM_VEC(x);
+    SEXP l_slot = PROTECT(GET_SLOT(x, install("L")));
+    int *Gp = Gp_SLOT(x), *dims = DIMS_SLOT(x),
+      *perm = INTEGER(GET_SLOT(l_slot, install("perm")));
     int nt = dims[nt_POS], q = dims[q_POS];
     double *b = RANEF_SLOT(x), *u = U_SLOT(x), one[] = {1,0};
     int *nc = Alloca(nt, int), *nlev = Alloca(nt, int);
@@ -853,6 +855,7 @@ static void update_ranef(SEXP x)
 			    st[i], nc + i, b + Gp[i], nlev + i);
 	}
     }
+  UNPROTECT(1);
 }
 
 
