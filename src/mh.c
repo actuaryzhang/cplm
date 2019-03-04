@@ -236,7 +236,7 @@ SEXP bcplm_metrop_rw(SEXP n, SEXP m, SEXP sd, SEXP lb, SEXP rb,
 		    REAL(ans) + i, R_fun, da);
   }
   setAttrib(ans, install("accept"), acc);
-  UNPROTECT(3);
   PutRNGstate();
+  UNPROTECT(3);
   return ans;
 }

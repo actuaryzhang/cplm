@@ -702,12 +702,12 @@ SEXP bcplm_mcmc (SEXP da){
     do_mcmc(da, dm[itr_POS], dm[bun_POS], dm[thn_POS], 
 	    dm[kp_POS], nR, REAL(ans_tmp));
     SET_VECTOR_ELT(ans, k, ans_tmp);
-    UNPROTECT(1) ;
+    UNPROTECT(1);
     if (nR) print_line();
   }
-  UNPROTECT(1) ;
   if (nR)  Rprintf(_("Markov Chain Monte Carlo ends!\n"));
-  return ans ;
+  UNPROTECT(1);
+  return ans;
     
 }
 
