@@ -39,12 +39,12 @@ importFrom("utils", "object.size")
 #  export 
 ############################
 # functions 
-export(cpglm, cpglmm, bcplm, zcpglm, gini)
+export(cpglm, cpglmm, bcplm, gini)
 export(sp2d)
 export(getF, plotF, tp, bsp)   #amer functions
 
 #Classes
-exportClasses(cplm, cpglm, cpglmm, bcplm, summary.cpglmm, zcpglm, gini)
+exportClasses(cplm, cpglm, cpglmm, bcplm, summary.cpglmm, gini)
 exportClasses(NullNum, NullList, NullFunc, ListFrame)
            
 #Methods

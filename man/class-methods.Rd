@@ -50,14 +50,6 @@
 \alias{VarCorr,bcplm-method}
 \alias{fixef,bcplm-method}
 
-\alias{zcpglm-class}
-\alias{coef,zcpglm-method}
-\alias{fitted,zcpglm-method}
-\alias{residuals,zcpglm-method}
-\alias{resid,zcpglm-method} 
-\alias{summary,zcpglm-method}
-\alias{predict,zcpglm-method}
-
 \alias{NullNum-class}
 \alias{NullList-class}
 \alias{NullFunc-class}
@@ -73,7 +65,7 @@
 \title{Classes and Methods for a Compound Poisson Linear Model Object}
 
 \description{
-Documented here are the \code{"cplm"} class and its derived classes \code{"cpglm"}, \code{"cpglmm"}, \code{"bcplm"} and \code{"zcpglm"}. Several primitive methods and statistical methods are created to facilitate the extraction of specific slots and further statistical analysis. \code{"gini"} is a class that stores the Gini indices and associated standard errors that could be used to perform model comparison involving the compound Poisson distribution. \code{"NullNum"},  \code{"NullList"}, \code{"NullFunc"} and \code{"ListFrame"} are virtual classes for \code{c("NULL", "numeric")}, \code{c("NULL","list")}, \code{c("NULL","function")} and \code{c("list","data.frame")}, respectively. 
+Documented here are the \code{"cplm"} class and its derived classes \code{"cpglm"}, \code{"cpglmm"}, and \code{"bcplm"}. Several primitive methods and statistical methods are created to facilitate the extraction of specific slots and further statistical analysis. \code{"gini"} is a class that stores the Gini indices and associated standard errors that could be used to perform model comparison involving the compound Poisson distribution. \code{"NullNum"},  \code{"NullList"}, \code{"NullFunc"} and \code{"ListFrame"} are virtual classes for \code{c("NULL", "numeric")}, \code{c("NULL","list")}, \code{c("NULL","function")} and \code{c("list","data.frame")}, respectively. 
 }
 
 \section{Objects from the Class}{
@@ -84,7 +76,6 @@ Documented here are the \code{"cplm"} class and its derived classes \code{"cpglm
   \item{\code{"cpglmm"}}{Objects can be created by calls of the form \code{new("cpglmm", ...)}, or a call to \code{cpglmm}.}
   \item{\code{"summary.cpglmm"}}{Objects can be created by calls of the form \code{new("summary.cpglmm", ...)}, or a call to \code{summary} on a \code{cpglmm} object. }
   \item{\code{"bcplm"}}{Objects can be created by calls from \code{new("bcplm", ...)} or \code{bcplm}.}
-  \item{\code{"zcpglm"}}{Objects can be created by calls from \code{new("zcpglm", ...)} or \code{zcpglm}.}  
   \item{\code{"gini"}}{Objects can be created by calls from \code{new("gini", ...)} or \code{gini}.}  
   \item{\code{"NullNum"}, \code{"NullList"}, \code{"NullFunc"}}{These are  virtual classes and  no objects may be created from them.}
  } 
@@ -280,24 +271,6 @@ The slots it used from the old \code{"mer"} class has the following slots (copie
     
 }
 
- The \code{"zcpglm"} class extends \code{"cplm"} directly and has the following additional slots:
-\describe{
-    \item{\code{coefficients}:}{a list of estimated mean parameters for the zero-inflation and the compound Poisson parts, respectively }
-    \item{\code{residuals}:}{raw residuals, class \code{"numeric"}}
-    \item{\code{fitted.values}:}{the fitted mean values, that is (1 - probability of zero state) * compound Poisson mean, class \code{"numeric"} }
-    \item{\code{df.residual}:}{residual degrees of freedom, class \code{"integer"}}
-    \item{\code{offset}:}{a list of the offset vectors used in each model} 
-    \item{\code{prior.weights}:}{the weights initially supplied, a vector of \code{1}s if none were, class \code{"numeric"}}        
-    \item{\code{y}:}{the response vector used.}
-    \item{\code{control}:}{the value of the control argument used, class \code{"list"} }
-    \item{\code{p}:}{the maximum likelihood estimate of the index parameter.}    
-    \item{\code{phi}:}{the maximum likelihood estimate of the dispersion parameter.}    
-    \item{\code{vcov}:}{estimated variance-covariance matrix, class \code{"matrix"}}    
-    \item{\code{converged}:}{indicating whether the algorithm has converged, class \code{"logical"}.}
-    \item{\code{na.action}:}{method of handling \code{NA}'s, class \code{"NullFunc"}.}
-    \item{\code{llik}:}{loglikelihood, class \code{numeric}.}
-}    
- 
    The \code{"gini"} class has the following slots:
   \describe{
     \item{\code{call}:}{the matched call. }
@@ -319,8 +292,6 @@ Class \code{"summary.cpglmm"}  extends class \code{"\linkS4class{cpglmm}"}, dire
 class \code{"\linkS4class{cplm}"}, by class \code{"\linkS4class{cpglmm}"}, distance 2.
 
 Class \code{"bcplm"} extends class \code{"\linkS4class{cplm}"}, directly.
-
-Class \code{"zcpglm"} extends class \code{"\linkS4class{cplm}"}, directly.
 }
 
 
@@ -371,16 +342,6 @@ Class \code{"zcpglm"} extends class \code{"\linkS4class{cplm}"}, directly.
     \item{fixef}{\code{signature(object = "bcplm")}: extract fixed effects. Additional arguments include: \code{sd = FALSE}: extract standard errors; \code{quantiles = NULL}: compute empirical quantiles. These additional statistics are stored as attributes in the returned results.}
    }
 
-The following methods are defined for the \code{"zcpglm"} class:
-  \describe{    
-    \item{coef}{\code{signature(object = "zcpglm")}:  extract the estimated coefficients.}
-    \item{fitted}{\code{signature(object = "zcpglm")}: return the fitted values. }
-    \item{residuals}{\code{signature(object = "zcpglm")}: extract raw residuals.}
-    \item{resid}{\code{signature(object = "zcpglm")}: same as \code{residuals}.}        
-    \item{summary}{\code{signature(object = "zcpglm")}: summary statistics using  Z-test.}     
-    \item{predict}{\code{signature(object = "zcpglm")}: generate predicted values for a new data set. Argument \code{type = c("response", "zero", "tweedie")}} specifies which component of the fitted values should be computed.   
-   }
-
 The following methods are defined for the \code{"gini"} class:
   \describe{
     \item{plot}{\code{signature(x = "gini", y = "missing")}: plot the ordered Lorenz curve from each model comparison. If \code{overlay = TRUE} (the default), different curves are plotted on the same graph for each base. }
@@ -390,7 +351,7 @@ The following methods are defined for the \code{"gini"} class:
 
 \author{ Wayne  Zhang \email{actuary_zhang@hotmail.com} }
 \seealso{
-  See also \code{\link{cpglm}}, \code{\link{cpglmm}}, \code{\link{bcplm}}, \code{\link{zcpglm}}, \code{\link[stats]{glm}}.   
+  See also \code{\link{cpglm}}, \code{\link{cpglmm}}, \code{\link{bcplm}}, \code{\link[stats]{glm}}.   
 }
 
 \keyword{classes}

@@ -71,9 +71,9 @@ theme.novpadding <-
 @
 
 \SweaveOpts{concordance=TRUE}
-\textcolor{Red}{If you use this software, please cite:}\\
-Zhang, Y (2013). Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models, {\em Statistics and Computing}, 23, 743-757. \\
-\url{https://cplm.googlecode.com/files/MixedTweedie.pdf}
+\textcolor{Red}{{\Large If you use this software, please cite:}\\[2ex]
+Zhang, Y (2013). Likelihood-based and Bayesian Methods for Tweedie Compound Poisson Linear Mixed Models, {\em Statistics and Computing}, 23, 743-757.} \\[1ex]
+\url{https://github.com/actuaryzhang/cplm/files/144051/TweediePaper.pdf}
 
 
 \section{Introduction}
@@ -143,7 +143,6 @@ method ? resid("cpglmm")
 GLM-type Models & \texttt{cpglm} & \texttt{bcplm}\\
 Mixed Models & \texttt{cpglmm} & \texttt{bcplm} \\
 Additive Models & \texttt{cpglmm} & \texttt{bcplm} \\
-Zero-inflated Models & \texttt{zcpglm} & N/A \\
    \hline\hline
 \end{tabular}
 \caption{Correspondence between models and functions in \cplm.}
@@ -533,131 +532,6 @@ Estimated dispersion parameter: 0.33778
 Estimated index parameter: 1.4178 
 \end{Verbatim}
 These results are in line with those in \cite{Zhang:2012}. We see that the estimate of the variance component is about twice as large as that based on maximum likelihood estimation.
-
-
-\subsection{Zero-inflated compound Poisson models}
-There has been a rich literature on  zero-inflated count models to account for excess zeros that cannot be modeled by a regular count distribution \citep{Lambert:1992, Hall:2000, Ghosh:2006}. 
-These models supplement a standard count distribution by allowing the observation to come from a degenerate distribution at zero with a positive probability.  For example, the zero-inflated  Poisson  \citep{Lambert:1992} assumes that, for the  $i_{th}$ observation of the count data, $T_i$,   
-\begin{align}
-T_i  \sim
-\begin{cases}
-0  &  \; \mbox{with probability} \; q_i,\\
-Pois(\lambda_i) &  \; \mbox{with probability} \; 1 - q_i.
-\end{cases}
-\end{align}
-This has the effect of inflating the probability of zeros and the variance for a regular Poisson distribution. 
-
-In this regard, we can replace the inherent Poisson distribution in \eqref{cpois} by the above zero-inflated Poisson distribution. This essentially yields a model with two parts: the zero-inflation part that generates the  excess zeros with probability $q_i$ and the compound Poisson part  that generates
-the random outcome from the compound Poisson process. That is, the response variable $Y_i$ in the zero-inflated compound Poisson [ZICP] model is generated as follows:
-\begin{align}
-\label{zicp}
-Y_i  \sim
-\begin{cases}
-0  &  \; \mbox{with probability} \; q_i,\\
-CPois(\mu_i, \phi, p) &  \; \mbox{with probability} \; 1 - q_i.
-\end{cases}
-\end{align}
-Under this assumption, the probability of observing a zero is 
-\begin{align}
-Pr(Y_i = 0) = q_i + (1 - q_i) \cdot  \exp \left(-\frac{ \mu_i^{2 - p}}{\phi  (2 - p)}\right),
-\end{align}
-where the exponent term is the probability of zero from the compound Poisson distribution (that is, $\exp(-\lambda)$ using the Poisson-Gamma representation in \eqref{cpois}). 
-
- Further, we allow covariates to be incorporated in both parts such  that the parameters $\bs{q} = (q_1, \cdots, q_n)'$ and $\bs{\mu} = (\mu_1, \cdots, \mu_n)'$ satisfy
-\begin{align}
-\varphi(\bs{q}) = \bs{G\gamma}, \quad  \eta(\bs{\mu}) = \bs{X\beta},
-\end{align}
-where $\varphi$ and $\eta$ are the known link functions, $\bs{G}$ and $\bs{X}$ the design matrices, and $\bs{\gamma}$ and $\bs{\beta}$ the vectors of regression parameters.
-
-
-
-We denote all the parameters in the model as $\bs{\Theta} = (\bs{\gamma}', \bs{\beta}', \phi, p)'$,  and $g$ as the density function for the compound Poisson variable. Then,  the loglikelihood, written as a function of the parameters,  can be derived as  
-\begin{align}
-\ell(\bs{\Theta} | \bs{y}) =  \sum_{i = 1}^n \log \left[ q_i \cdot \ind{(y_i = 0)} + (1 - q_i) \cdot g(y_i|\mu_i, \phi, p)  \right]. 
-\end{align}
-This loglikelihood is maximized, subject to the constraints $\phi > 0$ and $p \in (1, 2)$, to find estimates of $\bs{\Theta}$. 
- 
- 
-Unlike existing models, ZICP is a model that works on zero-inflated continuous data. One application of the ZICP model is to investigate insurance claim underreporting, a phenomenon known as the ``hunger for bonus''. It means that in the no claims discount system many insurance companies adopt, the insureds are motivated not to report small claims in exchange for bonuses or discounts on future premiums, thus often resulting in structural zeros in the data. The zero-inflation part of the model enables one to  explore the determinants of the claim underreporting behavior by examining the relevant  factors. For example, we can fit a zero-inflated model to the auto insurance data as follows:
-<<eval = FALSE>>=
-P3 <- zcpglm(CLM_AMT5 ~ CAR_USE + MARRIED + AREA + MVR_PTS||
-            MVR_PTS + INCOME, data = da)
-summary(P3)
-@
-\begin{Verbatim}
-Call:
-zcpglm(formula = CLM_AMT5 ~ CAR_USE + MARRIED + AREA + MVR_PTS || 
-    MVR_PTS + INCOME, data = da)
-
-Zero-inflation model coefficients:
-            Estimate Std. Error z value Pr(>|z|)    
-(Intercept)  0.58817    0.11787    4.99 6.04e-07 ***
-MVR_PTS     -0.77592    0.05341  -14.53  < 2e-16 ***
-INCOME       0.04602    0.01420    3.24  0.00119 ** 
-
-Compound Poisson model coefficients:
-                  Estimate Std. Error z value Pr(>|z|)    
-(Intercept)        1.33670    0.12949  10.323  < 2e-16 ***
-CAR_USECommercial  0.03984    0.06764   0.589    0.556    
-MARRIEDYes        -0.09394    0.06649  -1.413    0.158    
-AREAUrban          0.62814    0.11583   5.423 5.87e-08 ***
-MVR_PTS            0.05418    0.01379   3.929 8.52e-05 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
-
-Estimated dispersion parameter: 4.5116
-Estimated index parameter: 1.4445 
-\end{Verbatim}
-
-In the formula specification, we use \texttt{"||"} to separate the two models - regressors in the compound Poisson part are before \texttt{"||"} and covariates in the zero-inflation part are after \texttt{"||"}. In addition,  offsets can be specified in both components of the model, e.g., \\ \verb=y ~ x1 + offset(x2) | z1 + z2 + offset(z3)=. 
-
-The zero-inflation part of the result indicates that policyholders with higher income or lower MVR points are more likely to underreport insurance claims. Indeed, the zero-inflation part allows one to more adequately model the  patterns in the observed frequency of zeros than the GLM-type model. For example, Figure \ref{fig:zcpglm} shows the observed frequency of zeros and the predicted probability of zeros from the \texttt{cpglm} and \texttt{zcpglm} for each value of \texttt{MVR\_PTS} . 
-<<eval = FALSE>>=
-# p(y = 0) in cpglm
-da$prob0 <- exp(-fitted(P1)^(2 - P1$p)/(P1$phi * (2 - P1$p)))
-
-# p(y = 0) in zcpglm
-q <- predict(P3, da, type = "zero")
-mut <- predict(P3, da, type = "tweedie")
-da$prob1 <- q + (1 - q) * exp(-mut^(2 - P3$p) / (P3$phi * (2- P3$p)))
-
-# plot
-da$MVR_BIN <- Hmisc::cut2(da$MVR_PTS, g = 8, levels.mean = TRUE)
-tmp <- plyr::ddply(da, c("MVR_BIN"), summarize, 
-             freq0 = sum(CLM_AMT5 == 0)/length(CLM_AMT5),
-             prob0 = mean(prob0),
-             prob1 = mean(prob1))
-tmp$MVR_BIN <- as.numeric(as.character(tmp$MVR_BIN))
-with(tmp, {plot(MVR_BIN, freq0, cex = 0.5, mgp = c(1.3, 0.2, 0),
-                ylab = "probability of zero")
-           lines(MVR_BIN, prob0, col = 2)
-           lines(MVR_BIN, prob1, col = 3)})
-legend("topright", c("OBS", "CPGLM", "ZCPGLM"), 
-        pch = c(1, NA, NA), lty = c(NA, 1, 1), col = 1:3)
-@
-
-
-\begin{figure}[t]
-\centering
-\includegraphics [angle = 0, scale = 0.8]{zcpglm.pdf}
-\caption{Trace plot of the two chains in the claim triangle example. }
-\label{fig:zcpglm}
-\end{figure}
-
-%pdf("zcpglm.pdf", 2.5, 2.5)
-%parold <- mypar()
-%with(tmp, {plot(MVR_BIN, freq0, cex = 0.5, mgp = c(1.3, 0.2, 0),
-%                ylab = "probability of zero")
-%           lines(MVR_BIN, prob0, col = 2)
-%           lines(MVR_BIN, prob1, col = 3)})
-%legend("topright", c("OBS", "CPGLM", "ZCPGLM"), 
-%        pch = c(1, NA, NA), lty = c(NA, 1, 1), col = 1:3, cex = 0.4)
-%par(parold)
-%dev.off()
-
-In the above, the \texttt{predict} method computes the fitted/predicted values depending on the \texttt{type} argument. The returned value is $(1 - q_i)\cdot \mu_i$, $q_i$ or $\mu_i$ for \texttt{type = "response"} (the default), \texttt{type = "zero"} or \texttt{type = "tweedie"}, respectively.
-
-
 
 \subsection{The Gini index}
 

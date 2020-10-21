@@ -1,4 +1,12 @@
 ================
+Version 0.7-9
+================
+CHANGES:
+
+   o Remove zcpglm
+   o Allow compatibility with changes in statmod
+
+================
 Version 0.7-5
 ================
 CHANGES:
