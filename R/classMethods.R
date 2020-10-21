@@ -395,7 +395,7 @@ setMethod("predict", signature(object = "cpglm"),
    }
     if (!is.null(offset)) 
         predictor <- predictor + offset
-    mu <- tweedie(link.power = object@link.power)$linkinv(predictor)
+    mu <- as.vector(tweedie(link.power = object@link.power)$linkinv(predictor))
     type <- match.arg(type)                                                            
     switch(type,link = predictor, response = mu)                                                            
 })
@@ -646,7 +646,7 @@ setMethod("predict", signature(object = "cpglmm"),
     predictor <- as.numeric(X %*% beta + t(Zt)%*% u)
     if (!is.null(offset)) 
         predictor <- predictor + offset
-    mu <- tweedie(link.power = object@link.power)$linkinv(predictor)
+    mu <- as.vector(tweedie(link.power = object@link.power)$linkinv(predictor))
     type <- match.arg(type)
     switch(type,link = predictor, response = mu)   
 })

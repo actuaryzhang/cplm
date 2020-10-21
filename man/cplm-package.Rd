@@ -18,8 +18,6 @@ The following features of the package may be of special interest to the users:
 \item The package also implements a zero-inflated compound Poisson model, in which the observed frequency of zeros can generally be more adequately modeled. 
 \item We provide the Gini index based on an ordered Lorenz curve, which is better suited for model comparison involving the compound Poisson distribution.
 }
-
-More information is available on the hosting web site of the project \url{http://code.google.com/p/cplm/}
 }
 
 \author{

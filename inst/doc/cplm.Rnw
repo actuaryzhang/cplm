@@ -37,7 +37,7 @@ options(prompt = "R> ", digits = 4, show.signif.stars = FALSE)
 \Plaintitle{Compound Poisson Linear Models}
 
 \Abstract{
-The Tweedie compound Poisson distribution is a mixture of a degenerate distribution at the origin and a continuous distribution on the positive real line. It has been applied in a wide range of fields in which continuous data with exact zeros regularly arise. Nevertheless, statistical inference based on full likelihood and Bayesian methods is not available in most statistical software, largely because the distribution has an intractable density function and numerical methods that allow fast and accurate evaluation of the density did not appear until fairly recently. The \cplm package provides likelihood-based and Bayesian procedures for fitting common Tweedie compound Poisson linear models. In particular, models with hierarchical structures, penalized splines or extra zero inflation can be handled. Further, the package implements the Gini index based on an ordered version of the Lorenz curve as a robust model comparison tool involving zero-inflated and highly skewed distributions.
+The Tweedie compound Poisson distribution is a mixture of a degenerate distribution at the origin and a continuous distribution on the positive real line. It has been applied in a wide range of fields in which continuous data with exact zeros regularly arise. Nevertheless, statistical inference based on full likelihood and Bayesian methods is not available in most statistical software, largely because the distribution has an intractable density function and numerical methods that allow fast and accurate evaluation of the density did not appear until fairly recently. The \cplm package provides likelihood-based and Bayesian procedures for fitting common Tweedie compound Poisson linear models. In particular, models with hierarchical structures or penalized splines can be handled. Further, the package implements the Gini index based on an ordered version of the Lorenz curve as a robust model comparison tool involving zero-inflated and highly skewed distributions.
 }
 \Keywords{Bayesian, Gini, splines, maximum likelihood, mixed models, Tweedie compound Poisson distribution}
 
@@ -105,7 +105,6 @@ The \cplm package provides both likelihood-based and Bayesian methods for variou
 \item For mixed models, we provide likelihood-based methods using Laplace approximation and adaptive Gauss-Hermit quadrature. 
 \item A convenient interface is offered to fit additive models (penalized splines) using the mixed model estimation procedure.
 \item Self-tuned Markov chain Monte Carlo procedures are available for both GLM-type and  mixed models.
-\item The package also implements a zero-inflated compound Poisson model, in which the observed frequency of zeros can generally be more adequately modeled. 
 \item We provide the Gini index based on an ordered Lorenz curve, which is better suited for model comparison involving the compound Poisson distribution.
 \end{enumerate}
 
@@ -113,7 +112,7 @@ The \cplm package provides both likelihood-based and Bayesian methods for variou
 \section{Models and Examples}
 
 \subsection{Overview}
-Table \ref{tab:cplm} shows the mapping of the user-visible functions to the underlying model structures they handle. Currently, all Bayesian methods are integrated in the \texttt{bcplm} function and Bayesian estimation of the zero-inflated model is not yet implemented. A call of each function creates an object of a class that has the same name as the function. The \cplm package is written using S4 classes and methods \citep{Chambers:1998}. Most of the user-visible classes are derived from a parent class \texttt{"cplm"}, which specifies common slots used in the package. Several methods are defined for this class, some of which allow users to manipulate attributes and slots of an S4 object in a similar way as a list. For example, 
+Table \ref{tab:cplm} shows the mapping of the user-visible functions to the underlying model structures they handle. Currently, all Bayesian methods are integrated in the \texttt{bcplm} function. A call of each function creates an object of a class that has the same name as the function. The \cplm package is written using S4 classes and methods \citep{Chambers:1998}. Most of the user-visible classes are derived from a parent class \texttt{"cplm"}, which specifies common slots used in the package. Several methods are defined for this class, some of which allow users to manipulate attributes and slots of an S4 object in a similar way as a list. For example, 
 <<>>= 
 library(cplm)
 obj <- new("cplm")  # create an object of class "cplm"

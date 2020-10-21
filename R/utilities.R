@@ -247,7 +247,7 @@ fitted.bigglm <- function(object, data, ...){
   }
   # compute stats to be returned
   mu <- object$family$linkinv(eta)
-  dmu <- object$family$mu.eta(eta)
+  dmu <- as.vector(object$family$mu.eta(eta))
   wts <- pwts * dmu * dmu / (object$family$variance(mu))
   y <- eval(object$call$formula[[2]], data)
   res <- (y - mu) / dmu
