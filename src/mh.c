@@ -99,7 +99,7 @@ static void rmvnorm(int d, double *m, double *v, double *s){
   /* cholesky factor of v */
   chol(d, v, lv) ;
   /* scale and shift univariate normal r.v.s */
-  F77_CALL(dtrmv)("L", "N", "N", &d, lv, &d, s, &incx) ;
+  F77_CALL(dtrmv)("L", "N", "N", &d, lv, &d, s, &incx FCONE FCONE FCONE) ;
   for (int i = 0; i < d; i++)  s[i] += m[i] ;    
   Free(lv) ;    
 }
