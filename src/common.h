@@ -12,13 +12,16 @@
 
 #ifndef CPLM_COMMON_H 
 #define CPLM_COMMON_H 
-
+#define USE_FC_LEN_T
 /* common headers for R related definitions */
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
 #include <R_ext/Lapack.h>        /* for BLAS and Lapack related */
 #include "Matrix.h"		 /* for cholmod functions and S4 structures (GET_SLOT)*/
+#ifndef FCONE
+# define FCONE
+#endif
 
 /** zero an array */
 #define AZERO(x, n) {int _I_, _SZ_ = (n); for(_I_ = 0; _I_ < _SZ_; _I_++) (x)[_I_] = 0;}

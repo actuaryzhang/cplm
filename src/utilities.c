@@ -57,13 +57,13 @@ void cov(int n, int p, double *x, double *ans){
   Memcpy(x2, x, n * p) ;
   Memcpy(x3, x, n * p); 
   F77_CALL(dgemm)("N", "N", &n, &p, &n, &alpha, one,
-		  &n, x2, &n, &beta, x3, &n);
+		  &n, x2, &n, &beta, x3, &n FCONE FCONE);
   Memcpy(x2, x3, n * p) ;
   AZERO(ans, p * p) ;
     
   // compute covariance 
   F77_CALL(dgemm)("T", "N", &p, &p, &n, &beta, x2,
-		  &n, x3, &n, &beta2, ans, &p);
+		  &n, x3, &n, &beta2, ans, &p FCONE FCONE);
   for (int i = 0; i < p * p; i++) ans[i] /= (n - 1) * 1.0 ;
   Free(one) ;
   Free(x2) ;
@@ -91,7 +91,7 @@ void mult_mv(char *trans, int m, int n, double *A,
   double one = 1.0, zero = 0.0 ;
   int incx = 1;
   F77_CALL(dgemv)(trans, &m, &n, &one, A, &m, x, &incx,
-		  &zero, out, &incx) ;
+		  &zero, out, &incx FCONE) ;
 }
 
 
@@ -109,7 +109,7 @@ void mult_xtx(int m, int n, double *x, double *out){
   double alpha = 1.0, beta = 0.0, *x2 = Calloc(m * n, double);
   Memcpy(x2, x, m * n) ;
   F77_CALL(dgemm)("T", "N", &n, &n, &m, &alpha, x2, &m,
-		  x, &m, &beta, out, &n) ;
+		  x, &m, &beta, out, &n FCONE FCONE) ;
   Free(x2) ;
 }
 
@@ -125,7 +125,7 @@ void chol(int d, double *v, double *iv){
   int info = 0;
   // cholesky factor of v
   Memcpy(iv, v, d * d) ;   
-  F77_CALL(dpotrf)("L", &d, iv, &d, &info) ;
+  F77_CALL(dpotrf)("L", &d, iv, &d, &info FCONE) ;
   if (info)  error(_("Error %d in Cholesky decomposition."), info) ;   
 }
 
@@ -142,7 +142,7 @@ void solve_po(int d, double *v, double *iv){
   // cholesky factor of v
   chol(d, v, iv) ;
   // compute inverse    
-  F77_CALL(dpotri)("L", &d, iv, &d, &info) ;    
+  F77_CALL(dpotri)("L", &d, iv, &d, &info FCONE) ;    
   if (info) error(_("Error %d in inverting matrix."), info) ;
   // fill upper triangle 
   for (int i = 0; i < d - 1; i++){
@@ -265,15 +265,15 @@ void rwishart(int d, double nu, double *scal, double *out)
 
     Memcpy(scCp, scal, psqr);
     AZERO(tmp, psqr);
-    F77_CALL(dpotrf)("U", &d, scCp, &d, &info);
+    F77_CALL(dpotrf)("U", &d, scCp, &d, &info FCONE);
     if (info)
 	error(_("scale matrix is not positive-definite"));
     GetRNGstate();    
     std_rWishart_factor(nu, d, 1, tmp);
     F77_CALL(dtrmm)("R", "U", "N", "N", &d, &d,
-			&one, scCp, &d, tmp, &d);
+			&one, scCp, &d, tmp, &d FCONE FCONE FCONE FCONE);
     F77_CALL(dsyrk)("U", "T", &d, &d, &one, tmp, &d,
-			&zero, out, &d);
+			&zero, out, &d FCONE FCONE);
     for (int i = 1; i < d; i++){
         for (int k = 0; k < i; k++)
             out[i + k * d] = out[k + i * d];
