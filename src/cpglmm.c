@@ -186,7 +186,7 @@ static void Tt_Zt(CHM_SP A, int *Gp, int *nc, int *nlev, double **st, int nt)
 		while ((ai[nr] - Gp[i]) < nlev[i]) nr++;
 		nr -= p;	/* nr == 1 except in models with carry-over */
 		F77_CALL(dtrmm)("R", "L", "N", "U", &nr, nc + i,
-				one, st[i], nc + i, ax + p, &nr);
+				one, st[i], nc + i, ax + p, &nr FCONE FCONE FCONE FCONE);
 		p += (nr * nc[i]);
 	    }
 	}
@@ -312,7 +312,7 @@ static double cp_update_mu(SEXP x)
     Memcpy(eta, offset, n);
     /* eta := eta + X \beta */
     F77_CALL(dgemv)("N", &n, &p, one, X_SLOT(x), &n,
-		    FIXEF_SLOT(x), &i1, one, eta, &i1);
+		    FIXEF_SLOT(x), &i1, one, eta, &i1 FCONE);
     /* eta := eta + C' P' u */
     Ptu = M_cholmod_solve(CHOLMOD_Pt, L, cu, &c);
     ceta = N_AS_CHM_DN(eta, n, 1);
@@ -728,9 +728,9 @@ static double update_RX(SEXP x)
     Memcpy(RZX, (double*)(ans->x), q * p);
     M_cholmod_free_dense(&ans, &c);
     				/* downdate X'X and factor  */
-    F77_CALL(dsyrk)("U", "T", &p, &n, one, X, &n, zero, RX, &p); /* X'X */
-    F77_CALL(dsyrk)("U", "T", &p, &q, mone, RZX, &q, one, RX, &p);
-    F77_CALL(dpotrf)("U", &p, RX, &p, &info);
+    F77_CALL(dsyrk)("U", "T", &p, &n, one, X, &n, zero, RX, &p FCONE FCONE); /* X'X */
+    F77_CALL(dsyrk)("U", "T", &p, &q, mone, RZX, &q, one, RX, &p FCONE FCONE);
+    F77_CALL(dpotrf)("U", &p, RX, &p, &info FCONE);
     if (info)
 	error(_("Downdated X'X is not positive definite, %d."), info);
 				/* accumulate log(det(RX)^2)  */
@@ -852,7 +852,7 @@ static void update_ranef(SEXP x)
 	}
 	if (nc[i] > 1) {	/* multiply by \tilde{T}_i */
 	    F77_CALL(dtrmm)("R", "L", "T", "U", nlev + i, nc + i, one,
-			    st[i], nc + i, b + Gp[i], nlev + i);
+			    st[i], nc + i, b + Gp[i], nlev + i FCONE FCONE FCONE FCONE);
 	}
     }
   UNPROTECT(1);
@@ -1167,9 +1167,9 @@ SEXP mer_postVar(SEXP x, SEXP which)
 		M_cholmod_free_dense(&dm1, &c);
 		if (nci > 1) {
 		    F77_CALL(dtrmm)("L", "L", "N", "U", nc + i, nc + i,
-				    one, st[i], nc + i, vvk, nc + i);
+				    one, st[i], nc + i, vvk, nc + i FCONE FCONE FCONE FCONE);
 		    F77_CALL(dtrmm)("R", "L", "T", "U", nc + i, nc + i,
-				    one, st[i], nc + i, vvk, nc + i);
+				    one, st[i], nc + i, vvk, nc + i FCONE FCONE FCONE FCONE);
 		}
 	    }
 	    M_cholmod_free_sparse(&rhs, &c);
@@ -1228,10 +1228,10 @@ static void lmm_update_projection(SEXP x, double *pb, double *pbeta)
     M_cholmod_free_dense(&sol, &c);
 				/* solve RX' del2 = X'y - RZX'del1 */
     F77_CALL(dgemv)("T", &n, &p, one, X, &n,
-		    wy, &i1, zero, pbeta, &i1);
+		    wy, &i1, zero, pbeta, &i1 FCONE);
     F77_CALL(dgemv)("T", &q, &p, mone, RZX, &q,
-		    pb, &i1, one, pbeta, &i1);
-    F77_CALL(dtrsv)("U", "T", "N", &p, RX, &p, pbeta, &i1);
+		    pb, &i1, one, pbeta, &i1 FCONE);
+    F77_CALL(dtrsv)("U", "T", "N", &p, RX, &p, pbeta, &i1 FCONE FCONE FCONE);
     d[pwrss_POS] = sqr_length(wy, n)
 	- (sqr_length(pbeta, p) + sqr_length(pb, q));
     if (d[pwrss_POS] < 0)

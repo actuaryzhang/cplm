@@ -1,4 +1,11 @@
 ================
+Version 0.7-10
+================
+CHANGES:
+
+   o Fix issues related to USE_FC_LEN_T
+
+================
 Version 0.7-9
 ================
 CHANGES:
