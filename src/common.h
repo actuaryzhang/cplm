@@ -18,7 +18,8 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 #include <R_ext/Lapack.h>        /* for BLAS and Lapack related */
-#include "Matrix.h"		 /* for cholmod functions and S4 structures (GET_SLOT)*/
+#include <R_ext/RS.h>  /* for Memcpy */
+#include "Matrix.h"		 /* for cholmod functions and S4 structures (R_do_slot)*/
 #ifndef FCONE
 # define FCONE
 #endif
@@ -64,7 +65,7 @@
  */
 static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 {
-    SEXP pt = GET_SLOT(obj, install(str));
+    SEXP pt = R_do_slot(obj, install(str));
     return LENGTH(pt) ? REAL(pt) : (double*) NULL; 
 }
 
@@ -80,7 +81,7 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 
 /** Allocate (alloca) a cholmod_sparse struct, populate it with values
  * from the Zt slot and return the pointer. */
-#define Zt_SLOT(x) AS_CHM_SP(GET_SLOT(x, install("Zt")))
+#define Zt_SLOT(x) AS_CHM_SP(R_do_slot(x, install("Zt")))
 
 /** Return the double pointer to the offset slot or (double*) NULL if
  * offset has length 0) */
@@ -91,7 +92,7 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 #define PWT_SLOT(x) SLOT_REAL_NULL(x, "pWt")
 
 /** Return the integer pointer to the dims slot */
-#define DIMS_SLOT(x) INTEGER(GET_SLOT(x, install("dims")))
+#define DIMS_SLOT(x) INTEGER(R_do_slot(x, install("dims")))
 
 /** Return the double pointer to the fixef slot */
 #define FIXEF_SLOT(x) SLOT_REAL_NULL(x, "fixef")
@@ -118,14 +119,14 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 
 /** Allocate (alloca) a cholmod_sparse struct, populate it with values
  * from the A slot and return the pointer. */
-#define A_SLOT(x) AS_CHM_SP(GET_SLOT(x, install("A")))
+#define A_SLOT(x) AS_CHM_SP(R_do_slot(x, install("A")))
 
 /** Allocate (alloca) a cholmod_factor struct, populate it with values
  * from the L slot and return the pointer. */
-#define L_SLOT(x) AS_CHM_FR(GET_SLOT(x, install("L")))
+#define L_SLOT(x) AS_CHM_FR(R_do_slot(x, install("L")))
 
 /** Return the integer pointer to the Gp slot */
-#define Gp_SLOT(x) INTEGER(GET_SLOT(x, install("Gp")))
+#define Gp_SLOT(x) INTEGER(R_do_slot(x, install("Gp")))
 
 /** Return the double pointer to the Cx slot or (double*) NULL if
  * Cx has length 0) */
@@ -158,7 +159,7 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 #define BDP_SLOT(x) SLOT_REAL_NULL(x, "bound.p")
 
 /** Return the integer pointer to the permutation vector in the L slot */
-#define PERM_VEC(x) INTEGER(GET_SLOT(GET_SLOT(x, install("L")), install("perm")))
+#define PERM_VEC(x) INTEGER(R_do_slot(R_do_slot(x, install("L")), install("perm")))
 
 /** Return the double pointer to the ranef slot or (double*) NULL if
  *  ranef has length 0) */
@@ -178,7 +179,7 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 
 /** Allocate (alloca) a cholmod_sparse struct, populate it with values
  * from the Cm slot and return the pointer. */
-#define Cm_SLOT(x) AS_CHM_SP(GET_SLOT(x, install("Cm")))
+#define Cm_SLOT(x) AS_CHM_SP(R_do_slot(x, install("Cm")))
 
 
 /************************************************/
@@ -187,7 +188,7 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 
 /** Return the integer pointer to the ygt0 slot or (double*) NULL if
  * pWt has length 0) */
-#define YPO_SLOT(x) INTEGER(GET_SLOT(x, install("ygt0")))
+#define YPO_SLOT(x) INTEGER(R_do_slot(x, install("ygt0")))
 
 /** Return the double pointer to the bound.phi slot  */
 #define BDPHI_SLOT(x) SLOT_REAL_NULL(x, "bound.phi")
@@ -202,7 +203,7 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 #define MHSD_SLOT(x) SLOT_REAL_NULL(x, "mh.sd")
 
 /** Return the integer pointer to the k slot */
-#define K_SLOT(x) INTEGER(GET_SLOT(x, install("k")))
+#define K_SLOT(x) INTEGER(R_do_slot(x, install("k")))
 
 /** Return the double pointer to the cllik slot  */
 #define CLLIK_SLOT(x) SLOT_REAL_NULL(x, "cllik")
@@ -214,10 +215,10 @@ static R_INLINE double *SLOT_REAL_NULL(SEXP obj, char *str)
 #define ZU_SLOT(x) SLOT_REAL_NULL(x, "Zu")
 
 /** Return the integer pointer to the ncol slot */
-#define NCOL_SLOT(x) INTEGER(GET_SLOT(x, install("ncol")))
+#define NCOL_SLOT(x) INTEGER(R_do_slot(x, install("ncol")))
 
 /** Return the integer pointer to the nlev slot */
-#define NLEV_SLOT(x) INTEGER(GET_SLOT(x, install("nlev")))
+#define NLEV_SLOT(x) INTEGER(R_do_slot(x, install("nlev")))
 
 /** Return the double pointer to the accept slot  */
 #define ACC_SLOT(x) SLOT_REAL_NULL(x, "accept")

@@ -3,23 +3,23 @@ Version 0.7-10
 ================
 CHANGES:
 
-   o Fix issues related to USE_FC_LEN_T
+  * Fix issues related to USE_FC_LEN_T
 
 ================
 Version 0.7-9
 ================
 CHANGES:
 
-   o Remove zcpglm
-   o Allow compatibility with changes in statmod
+  * Remove zcpglm
+  * Allow compatibility with changes in statmod
 
 ================
 Version 0.7-5
 ================
 CHANGES:
 
-   o ‘gini’ now can handle a single score
-   o Fixed bug when supplying initial values
+  * ‘gini’ now can handle a single score
+  * Fixed bug when supplying initial values
 
 
 ================
@@ -28,12 +28,12 @@ Version 0.7-4
 
 CHANGES:
 
-   o 'predict' method failed when 'cpglm' is rank deficient. Fixed this. 
+  * 'predict' method failed when 'cpglm' is rank deficient. Fixed this. 
 	Now returns the prediction but with a warning. 
-   o 'predict' method for 'cpglmm' defaults to type = 'response'.
-   o Fix issues when specifying initial values for 'bcplm' 
-   o Add author info for the 'amer' functions
-   o Update vignettes
+  * 'predict' method for 'cpglmm' defaults to type = 'response'.
+  * Fix issues when specifying initial values for 'bcplm' 
+  * Add author info for the 'amer' functions
+  * Update vignettes
  
 
 ================
@@ -42,7 +42,7 @@ Version 0.7-3
 
 CHANGES:
 
-   o update to be compatible with R 3.x (Prior versions failed)
+  * update to be compatible with R 3.x (Prior versions failed)
 
 
 ================
@@ -51,7 +51,7 @@ Version 0.7-2
 
 CHANGES:
 
-   o fix bug related to sp2d
+  * fix bug related to sp2d
 
 ================
 Version 0.7-1
@@ -59,7 +59,7 @@ Version 0.7-1
 
 CHANGES:
 
-   o remove dependency on lme4 which is now completely re-written 
+  * remove dependency on lme4 which is now completely re-written 
 
 ================
 Version 0.6-4
@@ -67,42 +67,42 @@ Version 0.6-4
 
 CHANGES:
 
-   o remove dependency on amer which now is withdrawn from CRAN
+  * remove dependency on amer which now is withdrawn from CRAN
 
 ================
 Version 0.6-1
 ================
 NEW FEATURES
 
-   o Add vignettes 
-   o Add function 'zcpglm' which implements a zero-inflated compound Poisson 
+  * Add vignettes 
+  * Add function 'zcpglm' which implements a zero-inflated compound Poisson 
 	generalized linear model 
-   o Add function 'gini' which computes the Gini indices that enable robust 
+  * Add function 'gini' which computes the Gini indices that enable robust 
 	model comparison involving compound Poisson distributions
 
 CHANGES:
 
-   o Add a new data set 'AutoClaim'
-   o Set the max number of terms in computing the compound Poisson density using 
+  * Add a new data set 'AutoClaim'
+  * Set the max number of terms in computing the compound Poisson density using 
 	series evaluation method. 
-   o Correct bugs in predicting 'cpglm'. When the new data set has fewer factor 
+  * Correct bugs in predicting 'cpglm'. When the new data set has fewer factor 
 	levels, the old method produces wrong predictions.
-   o 'cpglm' has an argument 'optimizer' that allows users to select optimization routines.
-   o Function 'bcplm' now implements MCMC methods for both GLM and mixed models. 
+  * 'cpglm' has an argument 'optimizer' that allows users to select optimization routines.
+  * Function 'bcplm' now implements MCMC methods for both GLM and mixed models. 
 	This is a combination of the old functions 'bcpglm' and 'bcpglmm'
-   o Produce model summary for Bayesian estimates (from 'bcplm')
-   o Provide methods 'fixef' and 'VarCorr' for class 'bcplm'
-   o The tuning procedure in MCMC is now based a method described in  Browne and Draper (2005)
-   o MCMC now only implements univariate M-H within Gibbs sampling. Block update for the fixed 
+  * Produce model summary for Bayesian estimates (from 'bcplm')
+  * Provide methods 'fixef' and 'VarCorr' for class 'bcplm'
+  * The tuning procedure in MCMC is now based a method described in  Browne and Draper (2005)
+  * MCMC now only implements univariate M-H within Gibbs sampling. Block update for the fixed 
 	effects are removed. 
-   o Remove the latent variable approach for Bayesian estimation
-   o Remove method 'mcmcsamp'
-   o Functions 'getF' and 'plotF' (copied from 'amer') now works for additive models
+  * Remove the latent variable approach for Bayesian estimation
+  * Remove method 'mcmcsamp'
+  * Functions 'getF' and 'plotF' (copied from 'amer') now works for additive models
 	to extract and plot fitted smoothing effects
-   o Fix bugs in quadrature estimation of mixed models due to code inherited from lme4. This 
+  * Fix bugs in quadrature estimation of mixed models due to code inherited from lme4. This 
 	will only affect models with multiple random effects per level. 
-   o Fix the underflow issue in the quadrature estimation.
-   o Implement the PQL method to generate initial values in 'cpglmm'.
+  * Fix the underflow issue in the quadrature estimation.
+  * Implement the PQL method to generate initial values in 'cpglmm'.
 
 
 
@@ -111,89 +111,82 @@ Version 0.5-1
 ================
 NEW FEATURES
 
-   o Methods 'mcmcsamp' now is not available for 'cpglm' and 'cpglmm' objects
+  * Methods 'mcmcsamp' now is not available for 'cpglm' and 'cpglmm' objects
 	as a convenient way to perform MCMC simulations.
-   o Function 'cpglmm' handles additive models in a similar way as the package
+  * Function 'cpglmm' handles additive models in a similar way as the package
 	'amer'.
-   o Big data capability is added to function 'cpglm', which uses the bounded
+  * Big data capability is added to function 'cpglm', which uses the bounded
 	memory regression facility from the package 'biglm'.
-   o Function 'cpglmm' has an additional argument 'optimizer' that allows the 
+  * Function 'cpglmm' has an additional argument 'optimizer' that allows the 
 	users to choose which optimization routine to be used. The package 
 	'minqa' is now imported for the use 'bobyqa'.
-   o Function 'cpglmm' now implements adaptive Gauss-Hermite quadrature method
+  * Function 'cpglmm' now implements adaptive Gauss-Hermite quadrature method
 	for models with a single grouping factor. 
-   o Function 'bcpglmm' now implements an additional latent variable approach. 
+  * Function 'bcpglmm' now implements an additional latent variable approach. 
 
 CHANGES:
-   (user-visible)	
-   o The MCEM method is now completely removed from 'cpglm'
-   o In 'cpglmm', the Laplace approximated loglikelihood seems to have left out 
+  * The MCEM method is now completely removed from 'cpglm'
+  * In 'cpglmm', the Laplace approximated loglikelihood seems to have left out 
 	the dispersion parameter for one term, resulting a larger than expected 
 	variance component estimate. This is now fixed and it is more consistent 
 	with the quadrature estimate. 
-   o Add method 'predict' for 'cpglm' and 'cpglmm', which computes the predicted
+  * Add method 'predict' for 'cpglm' and 'cpglmm', which computes the predicted
 	values for a new data set, but not the prediction errors. 
-   o In 'cpglmm', fix a bug in specifying 'offset'
-   o In 'cpglmm', 'sigmaML' is updated after fitting the model so that the 
+  * In 'cpglmm', fix a bug in specifying 'offset'
+  * In 'cpglmm', 'sigmaML' is updated after fitting the model so that the 
 	'postVar' option in 'ranef' in 'lme4' can be used now. 
-   o 'weights' was not reflected in the update of the deviance. This is fixed now. 
-   o In 'cpglmm', 'vcov' now computes variances for 'phi' and 'p'
-
-   (not user-visible)	
-   o register native routines in initialization
+  * 'weights' was not reflected in the update of the deviance. This is fixed now. 
+  * In 'cpglmm', 'vcov' now computes variances for 'phi' and 'p'
+  * register native routines in initialization
 
 ================
 Version 0.4-1
 ================
 NEW FEATURES
 
-   o Function 'bcpglmm' is added that handles Bayesian mixed-effect models 
+  * Function 'bcpglmm' is added that handles Bayesian mixed-effect models 
 	using MCMC simulations.
 
 CHANGES:
-   (user-visible)	
-   o create the class 'cplm' as a fundamental structure in the package, 
+  * create the class 'cplm' as a fundamental structure in the package, 
 	and define utility methods for it
-   o replace the 'pstart', 'phistart' and 'betastart' arguments by a single
+  * replace the 'pstart', 'phistart' and 'betastart' arguments by a single
 	argument 'inits' in most functions
-   o combine the documentation for all classes and methods 
+  * combine the documentation for all classes and methods 
 
 ================
 Version 0.3-1
 ================
 NEW FEATURES
 
-   o Function 'cpglmm' is added that handles mixed-effect models using 
+  * Function 'cpglmm' is added that handles mixed-effect models using 
 	Laplace approximations. This is based on the R package 'lme4'.       
-   o Function 'bcpglm' now has a second method to fit Bayesian compound
+  * Function 'bcpglm' now has a second method to fit Bayesian compound
 	Poisson GLM using direct Tweedie density approximation. 
-   o Function 'bcpglm' also has a tuning phase that automatically updates
+  * Function 'bcpglm' also has a tuning phase that automatically updates
 	the scale parameter in the proposal distribution. 
-   o The profile likelihood method in 'cpglm' is now automated
+  * The profile likelihood method in 'cpglm' is now automated
 
 CHANGES:
-   (user-visible)	
-   o Prior distribution of the dispersion parameter in 'bcpglm' is
+  * Prior distribution of the dispersion parameter in 'bcpglm' is
 	changed to be Uniform, specified in the argument 'bound.phi'
-   o 'bcpglm' has another argument 'method' that allows users to choose
+  * 'bcpglm' has another argument 'method' that allows users to choose
 	from the latent variable approach or direct density evaluation
-   o An insurance example 'insLoss' is added in 'bcpglm' 
-   o Remove the 'digits' parameter in control in 'cpglm' as the profile 
+  * An insurance example 'insLoss' is added in 'bcpglm' 
+  * Remove the 'digits' parameter in control in 'cpglm' as the profile 
 	likelihood method is automated now 
-   o MCEM method in 'cpglm' simplifies the process of increase sample 
+  * MCEM method in 'cpglm' simplifies the process of increase sample 
 	size. The old time-consuming method of estimating approximate 
  	covariance matrix is removed. So the 'alpha' parameter in control
 	is removed. 
-   o The default method in 'cpglm' is now set to be 'profile'
-   o Remove the 'summary' slot in 'bcpglm'
-   o The profile method in 'cpglm' now returns covariance estimate for the 
+  * The default method in 'cpglm' is now set to be 'profile'
+  * Remove the 'summary' slot in 'bcpglm'
+  * The profile method in 'cpglm' now returns covariance estimate for the 
 	dispersion and index parameter 
-
-   (not user-visible):
-   o 'bcpglm' replaces ARMS with M-H update. Now the dependency on the 
+  * 'bcpglm' replaces ARMS with M-H update. Now the dependency on the 
 	ARMS functions is eliminated
-   o 'bcpglm' now generates starting values using 'cpglm'
-   o Simplify rejection sampling of latent variables (now twice faster)
+  * 'bcpglm' now generates starting values using 'cpglm'
+  * Simplify rejection sampling of latent variables (now twice faster)
 
 
 ================
@@ -201,29 +194,26 @@ Version 0.2-1
 ================
 NEW FEATURES
 
-   o The package now implements MCMC methods for Bayesian compound 
+  * The package now implements MCMC methods for Bayesian compound 
 	Poisson GLM in the function "bcpglm" with the use of 
 	latent variables.      
-   o The R package "coda" is imported so that a large number of functions 
+  * The R package "coda" is imported so that a large number of functions 
 	and methods defined there are now directly applicable to 
 	the simulation results from "bcpglm" to help diagnose convergence
 	and summarize posterior inference. 
 
 CHANGES:
-   (user-visible)	
-   o Various methods defined for the class "bcplm" and "bcpglm"
-   (not user-visible, all in C code):
-   o Change the use of "R_alloc" in "lbfgsb" to "Calloc" and "Free" 
-	(the old function eats up memory quickly)
-   o Simplify rejection sampling of latent variables (now twice faster)
+  * Various methods defined for the class "bcplm" and "bcpglm"
+  * Change the use of "R_alloc" in "lbfgsb" to "Calloc" and "Free" 
+  * Simplify rejection sampling of latent variables (now twice faster)
 
 ================
-Version 0.1-3 (not released)
+Version 0.1-3 
 ================
-CHANGES (not user-visible, all in C code):
-   o Fix a bug in rejection sampling of the latent variable 
-   o Fix a bug in specifying weights
-   o Divide cpglm_str into three parts, one for data and parameters, 
+CHANGES:
+  * Fix a bug in rejection sampling of the latent variable 
+  * Fix a bug in specifying weights
+  * Divide cpglm_str into three parts, one for data and parameters, 
 	one for latent variable, and one for EM related 
 
 ================
@@ -231,23 +221,23 @@ Version 0.1-2
 ================
 NEW FEATURES
 
-   o Add a wrapper of the profile likelihood approach to the "cpglm" 
+  * Add a wrapper of the profile likelihood approach to the "cpglm" 
      function that runs automatically to generate estimate of the 
      index parameter to arbitrary accuracy.
 
 CHANGES:
 
-   o The MCEM algorithm is now implemented in pure C code
-   o Remove the restriction on the "weights" argument (but not tested)
-   o Add "beta.step" in "control" to allow skips in the update of beta
-   o Allow "link" to be both character and numeric
-   o Force coercion of argument type before callings the C function
+  * The MCEM algorithm is now implemented in pure C code
+  * Remove the restriction on the "weights" argument (but not tested)
+  * Add "beta.step" in "control" to allow skips in the update of beta
+  * Allow "link" to be both character and numeric
+  * Force coercion of argument type before callings the C function
  	- thanks Mikel Esnaola Acebes for pointing out this bug
-   o Re-write "summary" and "show" function to produce statistical
+  * Re-write "summary" and "show" function to produce statistical
 	test output automatically
-   o Revise "residuals" to allow different types of residuals to be computed
-   o Add methods for "formula", "AIC", "deviance", "model.matrix", "terms"
-   o Output now returns "deviance", "aic" and "model.frame"
-   o Tracing info from MCEM tidied up by showing only the dispersion, the
+  * Revise "residuals" to allow different types of residuals to be computed
+  * Add methods for "formula", "AIC", "deviance", "model.matrix", "terms"
+  * Output now returns "deviance", "aic" and "model.frame"
+  * Tracing info from MCEM tidied up by showing only the dispersion, the
 	index parameter, and the sample size (if necessary)
-   o Fix bug in the definition of "[[", add methods for "["
+  * Fix bug in the definition of "[[", add methods for "["

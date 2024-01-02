@@ -113,7 +113,7 @@ apply_perm(double *dest, const double *src, const int *perm, int n)
  */
 static double *ST_getPars(SEXP x, double *pars)
 {
-    SEXP ST = GET_SLOT(x, install("ST"));
+    SEXP ST = R_do_slot(x, install("ST"));
     int nt = LENGTH(ST), pos = 0;
     for (int i = 0; i < nt; i++) {
 	SEXP STi = VECTOR_ELT(ST, i);
@@ -210,7 +210,7 @@ static void update_A(SEXP x)
 	*zx = (double*)(Zt->x);
     R_CheckStack();
 
-    ncmax = ST_nc_nlev(GET_SLOT(x, install("ST")), Gp, st, nc, nlev);
+    ncmax = ST_nc_nlev(R_do_slot(x, install("ST")), Gp, st, nc, nlev);
 
      /* Copy Z' to A unless A has new nonzeros */
     Memcpy(ax, zx, znnz);
@@ -305,7 +305,7 @@ static double cp_update_mu(SEXP x)
         *y = Y_SLOT(x), one[] = {1, 0};
     CHM_FR L = L_SLOT(x);
     CHM_SP A = A_SLOT(x);
-    CHM_DN Ptu, ceta, cu = AS_CHM_DN(GET_SLOT(x, install("u")));
+    CHM_DN Ptu, ceta, cu = AS_CHM_DN(R_do_slot(x, install("u")));
     R_CheckStack();
 
     /* eta := offset (offset initialized to zero if NULL) */
@@ -431,7 +431,7 @@ ST_setPars(SEXP x, const double *pars)
     double **st = Alloca(nt, double*);
     R_CheckStack();
 
-    ST_nc_nlev(GET_SLOT(x, install("ST")), Gp, st, nc, nlev);
+    ST_nc_nlev(R_do_slot(x, install("ST")), Gp, st, nc, nlev);
 				/* install the parameters in the ST slot */
     for (int i = 0; i < nt; i++) {
 	int nci = nc[i], ncp1 = nc[i] + 1;
@@ -482,7 +482,7 @@ static double cp_update_dev(SEXP x, double *parm)
 {
     int *dims = DIMS_SLOT(x) ;
     int n = dims[n_POS], q = dims[q_POS], nAGQ = dims[nAGQ_POS] ;
-    SEXP flistP = GET_SLOT(x, install("flist"));
+    SEXP flistP = R_do_slot(x, install("flist"));
     double *d = DEV_SLOT(x), *y = Y_SLOT(x),
       *mu = MU_SLOT(x), *phi = PHI_SLOT(x),
       *p = P_SLOT(x), *pwt = PWT_SLOT(x),
@@ -601,7 +601,7 @@ static double cp_update_dev(SEXP x, double *parm)
  */
 SEXP cpglmm_optimize(SEXP x)
 {
-    SEXP ST = GET_SLOT(x, install("ST"));
+    SEXP ST = R_do_slot(x, install("ST"));
     int *dims = DIMS_SLOT(x);
     int  nt = dims[nt_POS];
     int nv1 = dims[np_POS] +  dims[p_POS], verb = dims[verb_POS];
@@ -832,16 +832,16 @@ static void internal_ghq(int N, double *x, double *w)
  */
 static void update_ranef(SEXP x)
 {
-    SEXP l_slot = PROTECT(GET_SLOT(x, install("L")));
+    SEXP l_slot = PROTECT(R_do_slot(x, install("L")));
     int *Gp = Gp_SLOT(x), *dims = DIMS_SLOT(x),
-      *perm = INTEGER(GET_SLOT(l_slot, install("perm")));
+      *perm = INTEGER(R_do_slot(l_slot, install("perm")));
     int nt = dims[nt_POS], q = dims[q_POS];
     double *b = RANEF_SLOT(x), *u = U_SLOT(x), one[] = {1,0};
     int *nc = Alloca(nt, int), *nlev = Alloca(nt, int);
     double **st = Alloca(nt, double*);
     R_CheckStack();
 
-    ST_nc_nlev(GET_SLOT(x, install("ST")), Gp, st, nc, nlev);
+    ST_nc_nlev(R_do_slot(x, install("ST")), Gp, st, nc, nlev);
 				/* inverse permutation */
     for (int i = 0; i < q; i++) b[perm[i]] = u[i];
     for (int i = 0; i < nt; i++) {
@@ -949,7 +949,7 @@ SEXP cpglmm_ST_getPars(SEXP x)
  */
 SEXP cpglmm_ST_chol(SEXP x)
 {
-  SEXP ans = PROTECT(duplicate(GET_SLOT(x, install("ST"))));
+  SEXP ans = PROTECT(duplicate(R_do_slot(x, install("ST"))));
     int nt = DIMS_SLOT(x)[nt_POS];
     int *nc = Alloca(nt, int), *nlev = Alloca(nt, int);
     double **st = Alloca(nt, double*);
@@ -1047,13 +1047,13 @@ SEXP cpglmm_ghq(SEXP np)
 SEXP mer_ST_initialize(SEXP ST, SEXP Gpp, SEXP Zt)
 {
     int *Gp = INTEGER(Gpp),
-	*Zdims = INTEGER(GET_SLOT(Zt, install("Dim"))),
-	*zi = INTEGER(GET_SLOT(Zt, install("i"))), nt = LENGTH(ST);
+	*Zdims = INTEGER(R_do_slot(Zt, install("Dim"))),
+	*zi = INTEGER(R_do_slot(Zt, install("i"))), nt = LENGTH(ST);
     int *nc = Alloca(nt, int), *nlev = Alloca(nt, int),
-	nnz = INTEGER(GET_SLOT(Zt, install("p")))[Zdims[1]];
+	nnz = INTEGER(R_do_slot(Zt, install("p")))[Zdims[1]];
     double *rowsqr = Calloc(Zdims[0], double),
 	**st = Alloca(nt, double*),
-	*zx = REAL(GET_SLOT(Zt, install("x")));
+	*zx = REAL(R_do_slot(Zt, install("x")));
     R_CheckStack();
 
     ST_nc_nlev(ST, Gp, st, nc, nlev);
@@ -1112,7 +1112,7 @@ SEXP mer_create_L(SEXP CmP)
 SEXP mer_postVar(SEXP x, SEXP which)
 {
     int *Gp = Gp_SLOT(x), *dims = DIMS_SLOT(x), *ww;
-    SEXP ans, flistP = GET_SLOT(x, install("flist"));
+    SEXP ans, flistP = R_do_slot(x, install("flist"));
     const int nf = LENGTH(flistP), nt = dims[nt_POS], q = dims[q_POS];
     int nr = 0, pos = 0;
     /* int *asgn = INTEGER(getAttrib(flistP, install("assign"))); */
@@ -1135,7 +1135,7 @@ SEXP mer_postVar(SEXP x, SEXP which)
     if (!nr) return(allocVector(VECSXP, 0));
     ans = PROTECT(allocVector(VECSXP, nr));
 
-    ST_nc_nlev(GET_SLOT(x, install("ST")), Gp, st, nc, nlev);
+    ST_nc_nlev(R_do_slot(x, install("ST")), Gp, st, nc, nlev);
     for (int j = 0; j < q; j++) iperm[Perm[j]] = j; /* inverse permutation */
     sc = dims[useSc_POS] ?
 	(DEV_SLOT(x)[dims[isREML_POS] ? sigmaREML_POS : sigmaML_POS]) : 1;

@@ -1,7 +1,7 @@
 Package: cplm
 Type: Package
 Title: Compound Poisson Linear Models
-Version: 0.7-10
+Version: 0.7-11
 Author: Yanwei (Wayne) Zhang
 Maintainer: Yanwei (Wayne) Zhang <actuary_zhang@hotmail.com>
 Description: Likelihood-based and Bayesian methods for various compound Poisson linear models based on Zhang, Yanwei (2013) <https://link.springer.com/article/10.1007/s11222-012-9343-7>.
@@ -14,6 +14,6 @@ URL: https://github.com/actuaryzhang/cplm
 LazyLoad: yes
 LazyData: yes
 NeedsCompilation: yes
-
-
-
+Packaged: 2023-04-18 17:05:16 UTC; waynezhang
+Repository: CRAN
+Date/Publication: 2023-04-18 20:20:03 UTC

@@ -78,13 +78,6 @@ static R_INLINE void print_acc(int n, int p, double *acc, int pct){
 	  dmin(acc, p) * C, mean(acc, p) * C, dmax(acc, p) * C);     
 }
 
-/**
- * utility function to print out division lines 
- */
-static R_INLINE void print_line(){
-  Rprintf("-----------------------------------------\n");
-}
-
 
 /************************************************/
 /*   Level 1 utility functions for computing    */  
@@ -212,7 +205,7 @@ static double llik_mu(SEXP da){
  */
 
 static double prior_u_Gp(int gn, SEXP da){
-  SEXP V = GET_SLOT(da, install("Sigma")); 
+  SEXP V = R_do_slot(da, install("Sigma")); 
   int *Gp = Gp_SLOT(da), *nc = NCOL_SLOT(da), *nlev = NLEV_SLOT(da) ;
   double *v = REAL(VECTOR_ELT(V, gn)), *u = U_SLOT(da), ans = 0.0; 
   if (nc[gn] == 1) {                 /* univariate normal */
@@ -446,7 +439,7 @@ static void sim_u(SEXP da){
  */
 
 static void sim_Sigma(SEXP da){
-  SEXP V = GET_SLOT(da, install("Sigma")) ;
+  SEXP V = R_do_slot(da, install("Sigma")) ;
   int *dm = DIMS_SLOT(da), *Gp = Gp_SLOT(da),  
     *nc = NCOL_SLOT(da), *nlev = NLEV_SLOT(da); 
   int nT = dm[nT_POS], mc = imax(nc, nT);
@@ -486,7 +479,7 @@ static void sim_Sigma(SEXP da){
 
 static void get_init(SEXP da, int k){
   
-  SEXP inits = GET_SLOT(da, install("inits"));  /* inits is a list */
+  SEXP inits = R_do_slot(da, install("inits"));  /* inits is a list */
   int *dm = DIMS_SLOT(da);
   int nB = dm[nB_POS], nU = dm[nU_POS], nT = dm[nT_POS];
   double *init = REAL(VECTOR_ELT(inits, k));
@@ -498,7 +491,7 @@ static void get_init(SEXP da, int k){
 
   /* set U and Sigma */
   if (nU) {
-    SEXP V = GET_SLOT(da, install("Sigma"));
+    SEXP V = R_do_slot(da, install("Sigma"));
     int pos = 0, st = nB + 2, *nc = NCOL_SLOT(da) ;
     double *v ;
     Memcpy(U_SLOT(da), init + st, nU);
@@ -534,7 +527,7 @@ static void set_sims(SEXP da, int ns, int nS, double *sims){
 
   /* set U and Sigma */
   if (nU) {
-    SEXP V = GET_SLOT(da, install("Sigma"));
+    SEXP V = R_do_slot(da, install("Sigma"));
     int *nc = NCOL_SLOT(da), st = nB + 2;
     double *v; 
     for (int j = 0; j < nU; j++)
@@ -662,7 +655,7 @@ static void tune_mcmc(SEXP da){
   }
   if (dm[rpt_POS]){
     print_acc(1, nmh, acc, 1);
-    print_line();
+    Rprintf("-----------------------------------------\n");
   }
   Free(sims);
   Free(mark);
@@ -703,7 +696,7 @@ SEXP bcplm_mcmc (SEXP da){
 	    dm[kp_POS], nR, REAL(ans_tmp));
     SET_VECTOR_ELT(ans, k, ans_tmp);
     UNPROTECT(1);
-    if (nR) print_line();
+    if (nR) Rprintf("-----------------------------------------\n");
   }
   if (nR)  Rprintf(_("Markov Chain Monte Carlo ends!\n"));
   UNPROTECT(1);
