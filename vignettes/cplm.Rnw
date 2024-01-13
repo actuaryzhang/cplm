@@ -132,7 +132,7 @@ method ? resid("cpglm") # the "resid" method for class "cpglm"
 method ? resid("cpglmm")
 @
 
- \begin{table}[t]
+\begin{table}[t]
 \begin{center}
 \setlength{\tabcolsep}{6pt}
 \begin{tabular}{rcc}
@@ -191,6 +191,7 @@ We would like to build a model that is predictive of the insurance loss based on
 P1 <- cpglm(CLM_AMT5 ~ CAR_USE + MARRIED + AREA + MVR_PTS, data = da)
 summary(P1)
 @
+
 \begin{Verbatim}
 Call:
 cpglm(formula = CLM_AMT5 ~ CAR_USE + MARRIED + AREA + MVR_PTS, 
@@ -216,10 +217,13 @@ AIC:  10804
 
 Number of Fisher Scoring iterations:  6 
 \end{Verbatim}
+
 The \texttt{cpglm} function has the same syntax as the \texttt{glm} function except that there is no \texttt{family} argument. Desired link functions can be directly specify through the \texttt{link} argument, which uses the log link by default. The output shows the estimates for the index and the dispersion parameter in addition to those for the fixed effects. These coefficients can also be extracted directly from the object using
+
 <<eval = FALSE>>=
 c(coef(P1), p = P1$p, phi = P1$phi)
 @
+
 Similarly, most utility extraction methods defined for a linear model object such as \texttt{fitted}, \texttt{resid}, \texttt{model.matrix} and so on can be used. 
 
 By default, the optimization of the profile likelihood in \texttt{cpglm} calls the \texttt{glm} function in estimating the fixed effects. However, it is known that the \texttt{glm} function can run into memory issues for large data sets. To overcome this problem, the \texttt{cpglm} function implements an alternative method that relies on the bounded memory regression provided by the \texttt{biglm} package \citep{biglm}. The \texttt{bigglm} function divides the data frame into chunks and regression estimates are updated chunk by chunk. This method is invoked when the argument \texttt{chunksize} is greater than 0, which specifies the size of chunks for processing the data frame.
@@ -231,6 +235,7 @@ Most arguments in the \texttt{bigglm} function can be directly passed to  \textt
 \end{itemize}
 
 As an example, we can refit the previous model using \texttt{bigglm} with chunks of 500 data points as follows: 
+
 <<eval = FALSE>>=
 P1.big <- cpglm(CLM_AMT5 ~ CAR_USE + MARRIED + AREA + MVR_PTS, 
     data = da, chunksize = 500)
@@ -255,18 +260,22 @@ The above integral is often intractable, but can be approximated using the Lapla
 
 
 We use the fine root data set \citep{Silva;Hall;Tustin;Gandarl:1999} to illustrate various features of the \texttt{cpglmm} function. We are interested at how the distribution of the fine root length density [RLD]  is affected by the geometry of the structural root system and the type of the root stock.
+
 <<>>=
 head(FineRoot)
 @
 
 Following \cite{Zhang:2012}, we specify a model that includes both main effects of stock and zone and their interactions, with the intercept varying by plant:
+
 <<echo = FALSE>>=
 load("cpglmm.RData")
 @
+
 <<eval = FALSE>>=
 f0 <- cpglmm(RLD ~ Stock * Zone +  (1|Plant), data = FineRoot)
 summary(f0)
 @
+
 \begin{Verbatim}
 Compound Poisson linear mixed model fit by the Laplace approximation 
 Formula: RLD ~ Stock * Zone + (1 | Plant) 
@@ -292,10 +301,13 @@ Estimated dispersion parameter: 0.3286
 Estimated index parameter: 1.4131
 \end{Verbatim}
 The output is similar to that from a call of \texttt{glmer}, but reports additionally the estimates of the dispersion and the index parameters. 
+
 <<>>=
 inherits(f0, "mer")
 @
+
 As a result, most of the methods defined in (the old) \texttt{lme4} are directly applicable:
+
 <<>>=
 fixef(f0)  #coefficients
 ranef(f0)
@@ -303,17 +315,21 @@ VarCorr(f0)  #variance components
 @
 
 Models with crossed and nested random effects can also be handled. We illustrate this with a slightly different model structure (we explicitly convert plant to a factor because this is required when nested effects are present):
+
 <<eval = FALSE>>=
 FineRoot$Plant <- factor(FineRoot$Plant)
 f1 <- cpglmm(RLD ~ Stock + Spacing + (1|Plant), data = FineRoot)
 @ 
+
 We can add another random effect from zone as crossed or nested within plant as follows:
+
 <<eval = FALSE>>=
 f2 <- update(f1, . ~ . + (1|Zone))
 f3 <- update(f1, . ~ . + (1|Plant:Zone))
 # test the additional random effect
 anova(f1, f2)
 @
+
 \begin{Verbatim}
 Data: FineRoot
 Models:
@@ -325,9 +341,11 @@ f2  7 -145.58 -115.924 79.789 39.794      1  2.823e-10 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
 \end{Verbatim}
+
 <<eval = FALSE>>=
 anova(f1, f3)
 @
+
 \begin{Verbatim}
 Data: FineRoot
 Models:
@@ -339,12 +357,15 @@ f3  7 -147.04 -117.390 80.523 41.26      1  1.333e-10 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1  
 \end{Verbatim}
+
 In addition, the \texttt{cpglmm} function allows users to choose alternative optimizers that may perform better in certain circumstances. The \texttt{optimizer} argument determines which optimization routine is to be used. Possible choices are \texttt{"nlminb"} (the default), \texttt{"bobyqa"} and \texttt{"L-BFGS-B"}. We can refit the first example with a different optimizer as follows: 
+
 <<eval = FALSE>>=
 f4 <- cpglmm(RLD ~  Stock * Zone +  (1|Plant), 
             data = FineRoot, optimizer = "L-BFGS-B", 
             control = list(trace = 2, PQL.init = FALSE))
 @
+
 \begin{Verbatim}
 N = 9, M = 5 machine precision = 2.22045e-16
 
@@ -363,6 +384,7 @@ converged
 By default, the \texttt{cpglmm} function implements a penalized quasi-likelihood procedure before optimizing the approximated likelihood. In the above, we have specified \texttt{PQL.init = FALSE} to skip that step. 
 
 The default fitting method is the Laplace approximation. The quadrature method can be invoked by setting \texttt{nAGQ} to be greater than 1, which specifies the number of quadrature points to be used for the numerical evaluation. Note that this method only works when there is one single grouping factor in the model:
+
 <<eval = FALSE>>= 
 f5 <- cpglmm(RLD ~  Stock * Zone +  (1|Plant), 
             data = FineRoot, nAGQ = 10)
@@ -373,6 +395,7 @@ Further, similar to the \texttt{amer} package \citep{amer}, we provide convenien
 
 
 For example, we update the auto insurance loss example by specifying a smooth effect on the continuous covariate \texttt{MVR\_PTS}. 
+
 <<eval = FALSE>>= 
 P2 <- cpglmm(CLM_AMT5 ~ CAR_USE + MARRIED + AREA + tp(MVR_PTS), data = da)
 @ 
@@ -385,6 +408,7 @@ P2 <- cpglmm(CLM_AMT5 ~ CAR_USE + MARRIED + AREA + tp(MVR_PTS), data = da)
 \end{figure}
 
 We can extract and plot the smooth terms using the \texttt{getF} and \texttt{plotF} function from \texttt{amer}. For example, \texttt{plotF} generates the graph of the smooth term on the linear predictor scale as in Figure \ref{fig:smooth}. 
+
 <<eval = FALSE>>=
 plotF(P2, rug = FALSE)
 @
@@ -403,25 +427,27 @@ plotF(P2, rug = FALSE)
 The above models can also be formulated in the Bayesian setting, in which parameter inference is carried out via Markov chain Monte Carlo [MCMC] methods.
 
 In the Bayesian model, prior distributions have to be specified for all parameters in the model. The prior distributions we use are
+
 \begin{align}
 \bs{\beta} &\sim N(\bs{0}, 10000 \cdot \bs{I}); \\
 \phi &\sim U(0, 100); \\
 p &\sim U(1.01, 1.99),
 \end{align}
+
 where the prior mean and variance of $\bs{\beta}$ and the bounds for $\phi$ and $p$ can be modified  using the argument \texttt{prior.beta.mean}, \texttt{prior.beta.var}, \texttt{bound.phi} and \texttt{bound.p}, respectively. 
 
 If a mixed model is specified, we specify the prior distribution of the variance component as follows. If there is one random effect in a group, the inverse Gamma distribution is used; and if there is more than one random effects in a group, the inverse Wishart distribution is used:
+
 \begin{align}
 \sigma_b^{-2} &\sim Gamma(0.001, 1000); \\
 \bs{\Sigma}^{-1} &\sim Wishart_d(\bs{I}), 
 \end{align}
-where $d$ is the dimension of $\bs{\Sigma}$. Currently, the parameter values in these prior distributions cannot be modified by the user. 
 
+where $d$ is the dimension of $\bs{\Sigma}$. Currently, the parameter values in these prior distributions cannot be modified by the user. 
 
 In implementing the MCMC, we construct a Gibbs sampler in which parameters are updated one at a time given the current values of all the other parameters. Specifically, we use the random-walk Metropolis-Hastings algorithm in updating each parameter except for the variance components, which can be simulated directly due to conjugacy.
 
 There is a tuning process in the MCMC algorithm, where the  variances of the proposal (truncated) normal distributions are updated according to the sample variances computed from the simulations. The goal is to make the acceptance rate roughly between 40\% and 60\% for univariate M-H updates. The argument \texttt{tune.iter} determines how many iterations are used for the tuning process, and \texttt{n.tune} determines how many loops the tuning iterations should be divided into. These iterations will not be used in the final output.
-
 
 The \texttt{bcplm} function is used to fit both GLMs and mixed models using MCMC. We illustrate the Bayesian GLM using the claim triangle data from \cite{Peters;Shevchenko;Wuthrich:2009}, in which the Tweedie compound Poisson distribution is specified for a strictly positive but highly skewed response variable \texttt{increLoss}. 
 
@@ -433,6 +459,7 @@ B1 <- bcplm(increLoss ~ factor(year) + factor(lag), data = ClaimTriangle,
 @
 
 In the above, we specify the lower bound of $p$ to be greater than $1.1$. This is often a safe guard to regions where the compound Poisson distribution is multi-modal \citep{Dunn;Smyth:2005}. By default, the function prints out intermediate acceptance information of the M-H algorithms, which is often useful to determine whether good proposal variances have been obtained in the tuning phase. For example, a run of the above function prints out the following:
+
 \begin{Verbatim}
 Tuning phase...
 Acceptance rate: min(34.00%), mean(51.62%), max(63.00%)
@@ -453,14 +480,18 @@ Markov Chain Monte Carlo ends!
 \end{Verbatim}
 
 The simulation results are saved in the \texttt{sims.list} slot, which is an \texttt{"mcmc.list"} object that works with many methods defined in the \texttt{coda} package \citep{coda}. For example, we can use the \texttt{gelman.diag} function to compute the `potential scale reduction factor' \citep{Gelman;Rubin:1992} in order to determine approximate convergence: 
+
 <<eval = FALSE>>=
 summary(gelman.diag(B1$sims.list)[[1]][, 1])
 @
+
 \begin{Verbatim}
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.9992  1.0000  1.0030  1.0040  1.0080  1.0220 
 \end{Verbatim}
+
 In addition, we can also use visual diagnostic tools such as the trace and density plots- Figure \ref{fig:trace} and \ref{fig:density} are generated by the following commands:
+
 <<eval = FALSE>>=
 xyplot(B1$sims.list[, c(1:2, 20, 21)], xlab = NULL)
 densityplot(B1$sims.list[, c(1:2, 20, 21)], ylab = NULL)
@@ -494,16 +525,20 @@ We see that despite that all the potential scale reduction factors are very clos
 
 
 We conclude this section with a Bayesian example on compound Poisson mixed models. We now use MCMC methods to draw inference of the fine root mixed model (\texttt{f0}). The estimates of the variance components in Bayesian models are generally less biased than those based on maximum likelihood procedures when there are few levels in the grouping factor \citep{Zhang:2012}.
+
 <<eval = FALSE>>=
 set.seed(10)
 B2 <- bcplm(RLD ~ Stock * Zone + (1|Plant), 
             data = FineRoot, n.iter = 11000, 
             n.burnin = 1000, n.thin = 10)
 @
+
 The inference results can be summarized by 
+
 <<eval = FALSE>>=
 summary(B2)
 @
+
 \begin{Verbatim}
 Compound Poisson linear models via MCMC
 3 chains, each with 11000 iterations (first 1000 discarded), n.thin = 10
@@ -537,10 +572,12 @@ These results are in line with those in \cite{Zhang:2012}. We see that the estim
 For model comparison involving the compound Poisson distribution, the usual mean squared loss function is not quite informative for capturing the differences between predictions and observations, due to the high proportions of zeros and the skewed heavy-tailed distribution of the positive outcomes. For this reason, \cite{Frees;Meyers;Cummings:2011} develop an ordered version of the Lorenz curve and the associated Gini index as a statistical measure of the association between distributions, through which different predictive models can be compared.   The idea is that a score (model) with a greater Gini index produces a greater separation among the observations. In the insurance context, a higher Gini index indicates greater ability to distinguish good risks from bad risks. Therefore, the model with the highest Gini index is preferred.
 
 
-Continuing using insurance as an example, we let $y_i$ be the observed loss payment, $P_i$ be the baseline premium, $S_i$  be the insurance score (predictions from the  model), $R_i = S_i / P_i$ be the relativity, for the $i_{th}$ observation. We sort all the policies by the relativities in an increasing order, and compute the empirical cumulative premium and loss  distributions  as
+Continuing using insurance as an example, we let $y_i$ be the observed loss payment, $P_i$ be the baseline premium, $S_i$  be the insurance score (predictions from the  model), $R_i = S_i / P_i$ be the relativity, for the $i_{th}$ observation. We sort all the policies by the relativities in an increasing order, and compute the empirical cumulative premium and loss  distributions as
+
 \begin{align}
 \hat{F}_P(s) = \frac{\sum_{i=1}^n P_i \cdot \ind{(R_i \le s)}}{\sum_{i=1}^n P_i}, \; \hat{F}_L(s) = \frac{\sum_{i=1}^n y_i \cdot \ind{(R_i \le s)}}{\sum_{i=1}^n y_i}.
 \end{align}
+
 The graph $\left(\hat{F}_P(s), \hat{F}_L(s)\right)$  is an ordered Lorenz curve. The area between the Lorenz curve and the line of equality (a 45 degree line) is measure of the discrepancy between the premium and loss distributions, and twice this area is defined as the Gini index. Intuitively,  the Gini index can be regarded as the average expected profit that can be gained under the new pricing scheme defined by the score.
 
 
@@ -554,6 +591,7 @@ gg <- gini(loss = "CLM_AMT5", score  = paste("P", 1:3, sep = ""),
            data = da)
 gg
 @
+
 \begin{Verbatim}
 Call:
 gini(loss = "CLM_AMT5", score = paste("P", 1:3, sep = ""), data = da)
@@ -570,7 +608,9 @@ P1  0.000  2.148  2.098
 P2  2.191  0.000  2.295
 P3  2.106  2.275  0.000
 \end{Verbatim}
+
 We see that the GLM-type model is the worst, while according to the ``mini-max'' argument, the selected best model is the additive model \texttt{P2}. The \texttt{"gini"} object has a slot named \texttt{lorenz} that stores the graph for the underlying ordered Lorenz curve. A \texttt{plot} method is defined to extract and plot the graphs of the Lorenz curve using \texttt{ggplot2}:
+
 <<eval = FALSE>>= 
 theme_set(theme_bw())
 plot(gg, overlay = FALSE)
