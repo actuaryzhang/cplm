@@ -269,7 +269,7 @@ static double cp_update_L(SEXP x)
     
     // compute the cholesky factor of AA'+I with permutation
     if (!M_cholmod_factorize_p(A, one, (int*)NULL, 0, L, &c))
-	error(_("cholmod_factorize_p failed: status %d, minor %d from ncol %d"),
+	error(_("cholmod_factorize_p failed: status %d, minor %zu from ncol %zu"),
 	      c.status, L->minor, L->n);
 
     
@@ -1092,7 +1092,7 @@ SEXP mer_create_L(SEXP CmP)
 
     L = M_cholmod_analyze(Cm, &c);
     if (!M_cholmod_factorize_p(Cm, one, (int*)NULL, 0 /*fsize*/, L, &c))
-	error(_("cholmod_factorize_p failed: status %d, minor %d from ncol %d"),
+	error(_("cholmod_factorize_p failed: status %d, minor %zu from ncol %zu"),
 	      c.status, L->minor, L->n);
 
     return M_chm_factor_to_SEXP(L, 1);
